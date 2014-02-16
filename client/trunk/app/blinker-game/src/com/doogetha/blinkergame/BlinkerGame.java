@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -12,12 +11,20 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class BlinkerGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture textureRoad, textureCar;
+	private Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
+	private Button buttonLeft, buttonRight;
 	private Sprite road, car;
+	private Stage stage;
 	
 	protected final static Random random = new Random();
 	
@@ -27,7 +34,8 @@ public class BlinkerGame implements ApplicationListener {
 	private int nextDirection = -1;
 	
 	float centerX, centerY;
-	float x, y;
+	float x = 0, y = VIRTUAL_TILE_SIZE / 2;
+	long firstRender = 0;
 	long lastRender = 0;
 	
 	@Override
@@ -48,10 +56,6 @@ public class BlinkerGame implements ApplicationListener {
 		textureCar = new Texture(Gdx.files.internal("data/car.png"));
 		textureCar.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		// start position:
-		x = 0;
-		y = -VIRTUAL_TILE_SIZE / 2; 
-		
 		road = new Sprite(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
 		road.setSize(3f * VIRTUAL_TILE_SIZE, 3f * VIRTUAL_TILE_SIZE);
 		road.setOrigin(-(centerX = -road.getWidth()/2), -(centerY = -road.getHeight()/2));
@@ -61,6 +65,56 @@ public class BlinkerGame implements ApplicationListener {
 		car.setSize(0.4f * VIEWPORT_SIZE, 0.4f * VIEWPORT_SIZE);
 		car.setOrigin(car.getWidth()/2, car.getHeight()/2);
 		car.setPosition(-car.getWidth()/2, -car.getHeight()/2);
+		
+		// -------------------
+		
+		stage = new Stage(camera.viewportWidth, camera.viewportHeight);
+		Gdx.input.setInputProcessor(stage);
+		
+		buttonLeftOff = new Texture(Gdx.files.internal("data/buttonleft_off.png"));
+		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));
+		buttonRightOff = new Texture(Gdx.files.internal("data/buttonright_off.png"));
+		buttonRightOn = new Texture(Gdx.files.internal("data/buttonright_on.png"));
+
+		int buttonSize = 30;
+		
+		buttonLeft = new Button(new TextureRegionDrawable(new TextureRegion(buttonLeftOff)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)));
+		buttonLeft.setPosition(0, 0);
+		buttonLeft.setSize(buttonSize, buttonSize);
+		buttonLeft.addListener(new InputListener() {
+			@Override
+		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+		        return true;
+		    }
+
+			@Override
+		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (!buttonLeft.isDisabled()) {
+					buttonLeft.setDisabled(true);
+					buttonRight.setVisible(false);
+				}
+		    }
+		});
+		stage.addActor(buttonLeft);
+		
+		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
+		buttonRight.setPosition(camera.viewportWidth - buttonSize, 0);
+		buttonRight.setSize(buttonSize, buttonSize);
+		buttonRight.addListener(new InputListener() {
+			@Override
+		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+		        return true;
+		    }
+
+			@Override
+		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (!buttonRight.isDisabled()) {
+					buttonLeft.setVisible(false);
+					buttonRight.setDisabled(true);
+				}
+		    }
+		});
+		stage.addActor(buttonRight);
 	}
 
 	@Override
@@ -68,6 +122,11 @@ public class BlinkerGame implements ApplicationListener {
 		batch.dispose();
 		textureRoad.dispose();
 		textureCar.dispose();
+		buttonLeftOff.dispose();
+		buttonLeftOn.dispose();
+		buttonRightOff.dispose();
+		buttonRightOn.dispose();
+		stage.dispose();
 	}
 
 	protected void moveScreen(float offset) {
@@ -92,12 +151,19 @@ public class BlinkerGame implements ApplicationListener {
 		float combinedOffset = Math.abs(x+y);
 		if (combinedOffset >= 0.9f * VIRTUAL_TILE_SIZE && nextDirection == -1) {
 			// choose next direction
-			int turn = random.nextInt(3); // 0=left, 1=ahead, 2=right
+//			int turn = random.nextInt(3); // 0=left, 1=ahead, 2=right
+			int turn = buttonLeft.isChecked() ? 0 : buttonRight.isChecked() ? 2 : 1;
 			nextDirection = (direction + turn + 3) % 4;
+
+			buttonLeft.setDisabled(false);
+			buttonRight.setDisabled(false);
+			buttonLeft.setVisible(true);
+			buttonRight.setVisible(true);
+			buttonLeft.setChecked(false);
+			buttonRight.setChecked(false);
 		}
 		if (combinedOffset >= VIRTUAL_TILE_SIZE) {
-			x = 0;
-			y = 0;
+			x = 0; y = 0;
 			direction = nextDirection;
 			nextDirection = -1;
 		}
@@ -114,29 +180,33 @@ public class BlinkerGame implements ApplicationListener {
 	}
 	
 	@Override
-	public void render() {		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		float speed = 0.3f;
-		
+	public void render() {
+		if (firstRender == 0) firstRender = System.currentTimeMillis();
 		long now = System.currentTimeMillis();
+
+		float speed = 0.2f * Math.min(1000f, Math.max(0f,  now - firstRender - 500)) / 1000;
+		
 		if (lastRender > 0) {
 			int elapsed = Math.min((int)(now - lastRender), 200);
 			float offset = (float)elapsed * speed;
 			moveScreen(offset);
 		}
 		lastRender = now;
-		
+
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		road.draw(batch);
 		car.draw(batch);
 		batch.end();
+		
+		stage.act();
+		stage.draw(); // stage has its own sprite batch
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		lastRender = 0;
+		dispose();
 		create();
 	}
 
