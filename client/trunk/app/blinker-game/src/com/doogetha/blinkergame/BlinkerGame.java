@@ -21,10 +21,13 @@ public class BlinkerGame implements ApplicationListener {
 	
 	protected final static Random random = new Random();
 	
-	protected final static int VIEWPORT_PIXELS = 100;
+	protected final static int VIRTUAL_TILE_SIZE = 200;
+	protected final static int VIEWPORT_SIZE = VIRTUAL_TILE_SIZE / 2;
 	private int direction = 0;
+	private int nextDirection = -1;
 	
-	float x,y = 0;
+	float centerX, centerY;
+	float x, y;
 	long lastRender = 0;
 	
 	@Override
@@ -33,9 +36,9 @@ public class BlinkerGame implements ApplicationListener {
 		float h = Gdx.graphics.getHeight();
 		
 		if (h > w)
-			camera = new OrthographicCamera(VIEWPORT_PIXELS, VIEWPORT_PIXELS*h/w);
+			camera = new OrthographicCamera(VIEWPORT_SIZE, VIEWPORT_SIZE*h/w);
 		else
-			camera = new OrthographicCamera(VIEWPORT_PIXELS*w/h, VIEWPORT_PIXELS);
+			camera = new OrthographicCamera(VIEWPORT_SIZE*w/h, VIEWPORT_SIZE);
 		batch = new SpriteBatch();
 		
 		textureRoad = new Texture(Gdx.files.internal("data/road.png"));
@@ -45,15 +48,19 @@ public class BlinkerGame implements ApplicationListener {
 		textureCar = new Texture(Gdx.files.internal("data/car.png"));
 		textureCar.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		road = new Sprite(new TextureRegion(textureRoad, 0, 0, 6144, 6144));
-		road.setSize(6f * VIEWPORT_PIXELS, 6f * VIEWPORT_PIXELS);
-		road.setOrigin(road.getWidth()/2, road.getHeight()/2);
-		road.setPosition(x = -road.getWidth()/2, y = -road.getHeight()/2 - 50);
+		// start position:
+		x = 0;
+		y = -VIRTUAL_TILE_SIZE / 2; 
+		
+		road = new Sprite(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
+		road.setSize(3f * VIRTUAL_TILE_SIZE, 3f * VIRTUAL_TILE_SIZE);
+		road.setOrigin(-(centerX = -road.getWidth()/2), -(centerY = -road.getHeight()/2));
+		road.setPosition(centerX + x, centerY + y);
 
-		car = new Sprite(new TextureRegion(textureCar, 0, 0, 512, 512));
-		car.setSize(40, 40);
+		car = new Sprite(new TextureRegion(textureCar));
+		car.setSize(0.4f * VIEWPORT_SIZE, 0.4f * VIEWPORT_SIZE);
 		car.setOrigin(car.getWidth()/2, car.getHeight()/2);
-		car.setPosition(x = -car.getWidth()/2, y = -car.getHeight()/2);
+		car.setPosition(-car.getWidth()/2, -car.getHeight()/2);
 	}
 
 	@Override
@@ -65,33 +72,44 @@ public class BlinkerGame implements ApplicationListener {
 
 	protected void moveScreen(float offset) {
 		switch (direction) {
-		case 0:
+		case 0: // up
 			y -= offset;
 			break;
-		case 1:
+		case 1: // right
 			x -= offset;
 			break;
-		case 2:
+		case 2: // down
 			y += offset;
 			break;
-		case 3:
+		case 3: // left
 			x += offset;
 			break;
 		}
 
-		road.setX(x);
-		road.setY(y);
+		road.setX(centerX + x);
+		road.setY(centerY + y);
 
-		if (y <= -road.getHeight()/2 - 6f/3f*VIEWPORT_PIXELS ||
-		    x <= -road.getWidth()/2 - 6f/3f*VIEWPORT_PIXELS ||
-		    y >= -road.getHeight()/2 + 6f/3f*VIEWPORT_PIXELS ||
-		    x >= -road.getWidth()/2 + 6f/3f*VIEWPORT_PIXELS) {
-				x = -road.getWidth()/2;
-				y = -road.getHeight()/2;
-				int turn = random.nextInt(3);
-				direction = (direction + turn + 3) % 4;
-				if (turn == 2) car.rotate90(true);
-				else if (turn == 0) car.rotate90(false);
+		float combinedOffset = Math.abs(x+y);
+		if (combinedOffset >= 0.9f * VIRTUAL_TILE_SIZE && nextDirection == -1) {
+			// choose next direction
+			int turn = random.nextInt(3); // 0=left, 1=ahead, 2=right
+			nextDirection = (direction + turn + 3) % 4;
+		}
+		if (combinedOffset >= VIRTUAL_TILE_SIZE) {
+			x = 0;
+			y = 0;
+			direction = nextDirection;
+			nextDirection = -1;
+		}
+		
+		car.setRotation(-direction * 90);
+
+		if (nextDirection >= 0) {
+			int turnDir = nextDirection - direction;
+			if (turnDir == -3) turnDir = 1;
+			else if (turnDir == 3) turnDir = -1;
+			float crossRoadsOffset = VIRTUAL_TILE_SIZE - combinedOffset;
+			car.rotate(-turnDir * (1.0f - crossRoadsOffset / 0.1f / VIRTUAL_TILE_SIZE) * 90f);
 		}
 	}
 	
@@ -100,7 +118,7 @@ public class BlinkerGame implements ApplicationListener {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		float speed = 0.2f;
+		float speed = 0.3f;
 		
 		long now = System.currentTimeMillis();
 		if (lastRender > 0) {
