@@ -30,6 +30,8 @@ public class BlinkerGame implements ApplicationListener {
 	
 	protected final static int VIRTUAL_TILE_SIZE = 200;
 	protected final static int VIEWPORT_SIZE = VIRTUAL_TILE_SIZE / 2;
+	protected final static int BUTTON_SIZE = 30;
+	
 	private int direction = 0;
 	private int nextDirection = -1;
 	
@@ -37,6 +39,32 @@ public class BlinkerGame implements ApplicationListener {
 	float x = 0, y = VIRTUAL_TILE_SIZE / 2;
 	long firstRender = 0;
 	long lastRender = 0;
+	
+	protected class DirectionButtonListener extends InputListener {
+		
+		private Button me, other;
+		
+		public DirectionButtonListener(Button me, Button other) {
+			this.me = me;
+			this.other = other;
+		}
+		
+		@Override
+	    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			if (!me.isDisabled()) {
+				me.setDisabled(true);
+				me.setChecked(true);
+				me.setPosition((camera.viewportWidth - BUTTON_SIZE)/2, camera.viewportHeight - BUTTON_SIZE);
+				other.setVisible(false);
+			}
+			return true;
+	    }
+
+		@Override
+	    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			me.setDisabled(false);
+	    }
+	}
 	
 	@Override
 	public void create() {		
@@ -76,45 +104,28 @@ public class BlinkerGame implements ApplicationListener {
 		buttonRightOff = new Texture(Gdx.files.internal("data/buttonright_off.png"));
 		buttonRightOn = new Texture(Gdx.files.internal("data/buttonright_on.png"));
 
-		int buttonSize = 30;
-		
 		buttonLeft = new Button(new TextureRegionDrawable(new TextureRegion(buttonLeftOff)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)));
-		buttonLeft.setPosition(0, 0);
-		buttonLeft.setSize(buttonSize, buttonSize);
-		buttonLeft.addListener(new InputListener() {
-			@Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        return true;
-		    }
-
-			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (!buttonLeft.isDisabled()) {
-					buttonLeft.setDisabled(true);
-					buttonRight.setVisible(false);
-				}
-		    }
-		});
+		buttonLeft.setSize(BUTTON_SIZE, BUTTON_SIZE);
 		stage.addActor(buttonLeft);
 		
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
-		buttonRight.setPosition(camera.viewportWidth - buttonSize, 0);
-		buttonRight.setSize(buttonSize, buttonSize);
-		buttonRight.addListener(new InputListener() {
-			@Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        return true;
-		    }
-
-			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (!buttonRight.isDisabled()) {
-					buttonLeft.setVisible(false);
-					buttonRight.setDisabled(true);
-				}
-		    }
-		});
+		buttonRight.setSize(BUTTON_SIZE, BUTTON_SIZE);
+		
+		buttonLeft.addListener(new DirectionButtonListener(buttonLeft, buttonRight));
+		buttonRight.addListener(new DirectionButtonListener(buttonRight, buttonLeft));
+		
+		resetDirectionButtons();
+		
 		stage.addActor(buttonRight);
+	}
+	
+	protected void resetDirectionButtons() {
+		buttonLeft.setPosition(0, 0);
+		buttonRight.setPosition(camera.viewportWidth - BUTTON_SIZE, 0);
+		buttonLeft.setVisible(true);
+		buttonRight.setVisible(true);
+		buttonLeft.setChecked(false);
+		buttonRight.setChecked(false);
 	}
 
 	@Override
@@ -154,16 +165,14 @@ public class BlinkerGame implements ApplicationListener {
 //			int turn = random.nextInt(3); // 0=left, 1=ahead, 2=right
 			int turn = buttonLeft.isChecked() ? 0 : buttonRight.isChecked() ? 2 : 1;
 			nextDirection = (direction + turn + 3) % 4;
-
-			buttonLeft.setDisabled(false);
-			buttonRight.setDisabled(false);
-			buttonLeft.setVisible(true);
-			buttonRight.setVisible(true);
-			buttonLeft.setChecked(false);
-			buttonRight.setChecked(false);
+			resetDirectionButtons();
 		}
 		if (combinedOffset >= VIRTUAL_TILE_SIZE) {
-			x = 0; y = 0;
+			if (nextDirection == direction) {
+				x %= VIRTUAL_TILE_SIZE; y %= VIRTUAL_TILE_SIZE; // smoothly scroll ahead
+			} else {
+				x = 0; y = 0;
+			}
 			direction = nextDirection;
 			nextDirection = -1;
 		}
