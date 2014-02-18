@@ -42,7 +42,7 @@ public class BlinkerGame implements ApplicationListener {
 	protected final static int VIRTUAL_TILE_SIZE = 200;
 	protected final static int VIEWPORT_SIZE = VIRTUAL_TILE_SIZE / 2;
 	protected final static int BUTTON_SIZE = 30;
-	protected final static int START_DELAY = 2000;
+	protected final static int START_DELAY = 2500;
 	
 	private int direction = 0;
 	private int nextDirection = -1;
@@ -122,6 +122,8 @@ public class BlinkerGame implements ApplicationListener {
 		
 		// -------------------
 
+		directionHistory.add(random.nextInt(2) * 2); // left or right only
+		directionHistory.add(random.nextInt(2) * 2); // left or right only
 		setStartPosition();
 		
 		// -------------------
@@ -213,8 +215,10 @@ public class BlinkerGame implements ApplicationListener {
 				if (historyIndex < directionHistory.size())
 					turn = directionHistory.get(historyIndex++);
 				else {
-				    turn = directionHistory.size() > 0 ? random.nextInt(3) : random.nextInt(2) * 2;
-					directionHistory.add(turn); // 0=left, 1=ahead, 2=right
+				    do { turn = random.nextInt(3); } // 0=left, 1=ahead, 2=right
+				    while ( turn == directionHistory.get(historyIndex-1) &&
+				    		turn == directionHistory.get(historyIndex-2));
+					directionHistory.add(turn);
 					stopCarTime = System.currentTimeMillis();
 				}
 			} else {
@@ -283,9 +287,10 @@ public class BlinkerGame implements ApplicationListener {
 		long now = System.currentTimeMillis();
 		int appTime = (int)(now - firstRender);
 
-		float speed = 0.2f * Math.min(1000f, Math.max(0f,  appTime - START_DELAY)) / 1000;
+		float maxSpeed = 0.15f + 0.25f * Math.min(1f, directionHistory.size() / 7f);
+		float speed = maxSpeed * Math.min(1f, Math.max(0f,  appTime - START_DELAY) / 1000f);
 		if (stopCarTime > 0) {
-			speed = 0.2f * Math.max(0f,  1000 - (now - stopCarTime)) / 1000;
+			speed = maxSpeed * Math.max(0f,  1000 - (now - stopCarTime)) / 1000;
 			if (speed < 0.01f) checkEnterNewState();
 		}
 		
