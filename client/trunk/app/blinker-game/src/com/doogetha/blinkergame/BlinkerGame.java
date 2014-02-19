@@ -7,15 +7,15 @@ import java.util.Random;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -32,15 +33,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class BlinkerGame implements ApplicationListener {
 	private OrthographicCamera camera;
-	private SpriteBatch batch;
 	private Texture textureRoad, textureCar;
 	private Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
 	private Texture textureGetReady, textureDrive, textureGameOver, texturePlusOne;
 	private Button buttonLeft, buttonRight;
-	private Sprite road, car;
+	private Image road, car;
 	private BitmapFont font;
 	private Image getready, drive, gameover;
-	private Label hiScoreLabel, scoreLabel, plusLabel;
+	private Label scoreLabel, plusLabel;
 	private Stage stage;
 	
 	protected static enum GameState {
@@ -62,7 +62,6 @@ public class BlinkerGame implements ApplicationListener {
 	private int direction = 0;
 	private int nextDirection = -1;
 	
-	private int hiScore = 0;
 	private int score = 0;
 	
 	private List<Integer> directionHistory = new ArrayList<Integer>();
@@ -70,7 +69,7 @@ public class BlinkerGame implements ApplicationListener {
 	long stopCarTime = 0;
 	boolean gameOver = false;
 	
-	float centerX, centerY;
+	float roadCenterX, roadCenterY;
 	float x, y;
 	long firstRender = 0;
 	long lastRender = 0;
@@ -108,8 +107,6 @@ public class BlinkerGame implements ApplicationListener {
 
 		constructCamera(w, h);
 		
-		batch = new SpriteBatch();
-		
 		textureRoad = new Texture(Gdx.files.internal("data/road.png"));
 		textureRoad.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		textureRoad.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
@@ -125,15 +122,12 @@ public class BlinkerGame implements ApplicationListener {
 		texturePlusOne = new Texture(Gdx.files.internal("data/plusone.png"));
 		texturePlusOne.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		road = new Sprite(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
+		road = new Image(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
 		road.setSize(3f * VIRTUAL_TILE_SIZE, 3f * VIRTUAL_TILE_SIZE);
-		road.setOrigin(-(centerX = -road.getWidth()/2), -(centerY = -road.getHeight()/2));
-		road.setPosition(centerX + x, centerY + y);
 
-		car = new Sprite(new TextureRegion(textureCar));
+		car = new Image(new TextureRegion(textureCar));
 		car.setSize(0.4f * VIEWPORT_SIZE, 0.4f * VIEWPORT_SIZE);
 		car.setOrigin(car.getWidth()/2, car.getHeight()/2);
-		car.setPosition(-car.getWidth()/2, -car.getHeight()/2);
 		
 		getready = newScreenImageActor(textureGetReady, VIEWPORT_SIZE);
 		drive = newScreenImageActor(textureDrive, VIEWPORT_SIZE);
@@ -166,16 +160,16 @@ public class BlinkerGame implements ApplicationListener {
 		buttonLeft.addListener(new DirectionButtonListener(buttonLeft, buttonRight));
 		buttonRight.addListener(new DirectionButtonListener(buttonRight, buttonLeft));
 		
-		hiScoreLabel = new Label("0", new Label.LabelStyle(font, Color.YELLOW));
 		scoreLabel = new Label(" ", new Label.LabelStyle(font, Color.YELLOW));
 		plusLabel = new Label("+1", new Label.LabelStyle(font, Color.YELLOW));
 		makeAlphaInvisible(plusLabel);
 		
 		setFixedScreenPositions();
 		
+		stage.addActor(road);
+		stage.addActor(car);
 		stage.addActor(buttonLeft);
 		stage.addActor(buttonRight);
-		stage.addActor(hiScoreLabel);
 		stage.addActor(scoreLabel);
 		stage.addActor(plusLabel);
 		stage.addActor(getready);
@@ -186,8 +180,11 @@ public class BlinkerGame implements ApplicationListener {
 	}
 	
 	protected void setFixedScreenPositions() {
-		hiScoreLabel.setPosition(50, camera.viewportHeight - 150);
-		scoreLabel.setPosition(50, camera.viewportHeight - 250);
+		roadCenterX = -(road.getWidth() - camera.viewportWidth)/2;
+		roadCenterY = -(road.getHeight() - camera.viewportHeight)/2;
+		road.setPosition(roadCenterX + x, roadCenterY + y);
+		car.setPosition((camera.viewportWidth-car.getWidth())/2, (camera.viewportHeight-car.getHeight())/2);
+		scoreLabel.setPosition(50, camera.viewportHeight - 150);
 		centerOnScreen(getready);
 		centerOnScreen(drive);
 		centerOnScreen(gameover);
@@ -240,7 +237,6 @@ public class BlinkerGame implements ApplicationListener {
 	
 	@Override
 	public void dispose() {
-		batch.dispose();
 		textureRoad.dispose();
 		textureCar.dispose();
 		textureGetReady.dispose();
@@ -271,8 +267,8 @@ public class BlinkerGame implements ApplicationListener {
 			break;
 		}
 
-		road.setX(centerX + x);
-		road.setY(centerY + y);
+		road.setX(roadCenterX + x);
+		road.setY(roadCenterY + y);
 
 		float combinedOffset = Math.abs(x+y);
 		if (combinedOffset >= 0.9f * VIRTUAL_TILE_SIZE && nextDirection == -1) {
@@ -286,20 +282,19 @@ public class BlinkerGame implements ApplicationListener {
 				    while ( turn == directionHistory.get(historyIndex-1) &&
 				    		turn == directionHistory.get(historyIndex-2));
 					directionHistory.add(turn);
-					stopCarTime = System.currentTimeMillis();
+					endOfRound();
 				}
 			} else {
 				turn = buttonLeft.isChecked() ? 0 : buttonRight.isChecked() ? 2 : 1;
 				if (turn != directionHistory.get(historyIndex)) {
 					gameOver();
-					stopCarTime = System.currentTimeMillis();
 				} else {
 					// good, go on
 					goodTurn();
 					historyIndex++;
 					if (historyIndex == directionHistory.size()) {
 						// end reached
-						stopCarTime = System.currentTimeMillis();
+						endOfRound();
 						setDirectionButtonsVisible(false);
 					} else {
 						resetDirectionButtons();
@@ -328,11 +323,14 @@ public class BlinkerGame implements ApplicationListener {
 			car.rotate(-turnDir * (1.0f - crossRoadsOffset / 0.1f / VIRTUAL_TILE_SIZE) * 90f);
 		}
 	}
+
+	protected void endOfRound() {
+		stopCarTime = System.currentTimeMillis();
+		fadeVisibility(stage.getRoot(), 1.5f, 0.25f, false);
+	}
 	
 	protected void goodTurn() {
 		score += historyIndex + 1;
-		if (score > hiScore) hiScore = score;
-		hiScoreLabel.setText(""+hiScore);
 		scoreLabel.setText(""+score);
 		plusLabel.setText("+"+(historyIndex+1));
 		plusLabel.needsLayout();
@@ -343,6 +341,7 @@ public class BlinkerGame implements ApplicationListener {
 	
 	protected void gameOver() {
 		gameOver = true;
+		stopCarTime = System.currentTimeMillis();
 		setDirectionButtonsVisible(false);
 		gameover.addAction(newFadeAction(1f, 1f));
 	}
@@ -352,15 +351,20 @@ public class BlinkerGame implements ApplicationListener {
 		firstRender = 0;
 		stopCarTime = 0;
 		historyIndex = 0;
-		if (newState.equals(GameState.drive)) {
-			score = 0;
-			scoreLabel.setText("0");
-		} else {
-			scoreLabel.setText("");
-		}
 		setStartPosition();
 		resetDirectionButtons();
 		setDirectionButtonsVisible(newState.equals(GameState.drive));
+		fadeVisibility(stage.getRoot(), 0f, 0.5f, true);
+	}
+	
+	protected static void fadeVisibility(Actor actor, float delay, float duration, boolean fadeIn) {
+		actor.addAction(fadeIn ?
+			new SequenceAction(
+				newVisibleAction(true),
+				newDelayAction(delay, newFadeAction(duration, 1f))) :
+			new SequenceAction(
+				newDelayAction(delay, newFadeAction(duration, 0f)),
+				newVisibleAction(false)));
 	}
 	
 	protected void checkEnterNewState() {
@@ -379,7 +383,10 @@ public class BlinkerGame implements ApplicationListener {
 	
 	@Override
 	public void render() {
-		if (firstRender == 0) {
+	    Gdx.gl.glClearColor(0, 0, 0f, 1);
+	    Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+	    if (firstRender == 0) {
 			firstRender = System.currentTimeMillis();
 			setupGetReady();
 		}
@@ -390,7 +397,7 @@ public class BlinkerGame implements ApplicationListener {
 		float speed = maxSpeed * Math.min(1f, Math.max(0f,  appTime - START_DELAY) / 1000f);
 		if (stopCarTime > 0) {
 			speed = maxSpeed * Math.max(0f,  750 - (now - stopCarTime)) / 750;
-			if (speed < 0.01f) checkEnterNewState();
+			if (!stage.getRoot().isVisible()) checkEnterNewState();
 		}
 		
 		if (lastRender > 0) {
@@ -401,12 +408,7 @@ public class BlinkerGame implements ApplicationListener {
 		}
 		lastRender = now;
 
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		road.draw(batch);
-		car.draw(batch);
-		batch.end();
-		
+		stage.getSpriteBatch().setProjectionMatrix(camera.combined);
 		stage.act();
 		stage.draw(); // stage has its own sprite batch
 	}
@@ -445,6 +447,12 @@ public class BlinkerGame implements ApplicationListener {
 		mba.setDuration(duration);
 		mba.setAmount(x, y);
 		return mba;
+	}
+	
+	protected static VisibleAction newVisibleAction(boolean visible) {
+		VisibleAction va = new VisibleAction();
+		va.setVisible(visible);
+		return va;
 	}
 	
 	@Override
