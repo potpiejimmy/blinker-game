@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class BlinkerGame implements ApplicationListener {
@@ -37,8 +39,8 @@ public class BlinkerGame implements ApplicationListener {
 	private Button buttonLeft, buttonRight;
 	private Sprite road, car;
 	private BitmapFont font;
-	private Image getready, drive, gameover, plusone;
-	private Label scoreLabel;
+	private Image getready, drive, gameover;
+	private Label hiScoreLabel, scoreLabel, plusLabel;
 	private Stage stage;
 	
 	protected static enum GameState {
@@ -59,6 +61,7 @@ public class BlinkerGame implements ApplicationListener {
 	private int direction = 0;
 	private int nextDirection = -1;
 	
+	private int hiScore = 0;
 	private int score = 0;
 	
 	private List<Integer> directionHistory = new ArrayList<Integer>();
@@ -129,7 +132,6 @@ public class BlinkerGame implements ApplicationListener {
 		getready = newScreenImageActor(textureGetReady, VIEWPORT_SIZE);
 		drive = newScreenImageActor(textureDrive, VIEWPORT_SIZE);
 		gameover = newScreenImageActor(textureGameOver, VIEWPORT_SIZE);
-		plusone = newScreenImageActor(texturePlusOne, PLUSONE_SIZE);
 		
 		font = new BitmapFont();
 		font.setScale(0.6f);
@@ -159,27 +161,49 @@ public class BlinkerGame implements ApplicationListener {
 		buttonLeft.addListener(new DirectionButtonListener(buttonLeft, buttonRight));
 		buttonRight.addListener(new DirectionButtonListener(buttonRight, buttonLeft));
 		
+		hiScoreLabel = new Label("0", new Label.LabelStyle(font, Color.YELLOW));
 		scoreLabel = new Label("0", new Label.LabelStyle(font, Color.YELLOW));
-		scoreLabel.setPosition(5, camera.viewportHeight - 15);
+		plusLabel = new Label("+1", new Label.LabelStyle(font, Color.YELLOW));
+		makeAlphaInvisible(plusLabel);
+		
+		setFixedScreenPositions();
 		
 		stage.addActor(buttonLeft);
 		stage.addActor(buttonRight);
+		stage.addActor(hiScoreLabel);
 		stage.addActor(scoreLabel);
+		stage.addActor(plusLabel);
 		stage.addActor(getready);
 		stage.addActor(drive);
 		stage.addActor(gameover);
-		stage.addActor(plusone);
 
 		resetDirectionButtons();
+	}
+	
+	protected void setFixedScreenPositions() {
+		hiScoreLabel.setPosition(5, camera.viewportHeight - 15);
+		scoreLabel.setPosition(5, camera.viewportHeight - 27);
+		centerOnScreen(getready);
+		centerOnScreen(drive);
+		centerOnScreen(gameover);
+		centerOnScreen(plusLabel);
+	}
+	
+	protected void centerOnScreen(Widget widget) {
+		widget.setPosition((camera.viewportWidth-widget.getWidth())/2, (camera.viewportHeight-widget.getHeight())/2);
 	}
 	
 	protected Image newScreenImageActor(Texture texture, float size) {
 		Image img = new Image(new TextureRegion(texture));
 		img.setSize(size, size);
-		img.setPosition((camera.viewportWidth-size)/2, (camera.viewportHeight-size)/2);
-		Color c = img.getColor();
-		img.setColor(c.r, c.g, c.b, 0f); // invisible alpha
+		makeAlphaInvisible(img);
+		img.setTouchable(Touchable.disabled);
 		return img;
+	}
+	
+	protected static void makeAlphaInvisible(Widget widget) {
+		Color c = widget.getColor();
+		widget.setColor(c.r, c.g, c.b, 0f); // invisible alpha
 	}
 	
 	protected void setStartPosition() {
@@ -199,12 +223,18 @@ public class BlinkerGame implements ApplicationListener {
 	protected void resetDirectionButtons() {
 		buttonLeft.setPosition(0, 0);
 		buttonRight.setPosition(camera.viewportWidth - BUTTON_SIZE, 0);
-		buttonLeft.setVisible(true);
-		buttonRight.setVisible(true);
+		setDirectionButtonsVisible(true);
 		buttonLeft.setChecked(false);
 		buttonRight.setChecked(false);
 	}
 
+	protected void setDirectionButtonsVisible(boolean visible) {
+		buttonLeft.setVisible(visible);
+		buttonRight.setVisible(visible);
+		buttonLeft.setDisabled(!visible);
+		buttonRight.setDisabled(!visible);
+	}
+	
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -267,8 +297,10 @@ public class BlinkerGame implements ApplicationListener {
 					if (historyIndex == directionHistory.size()) {
 						// end reached
 						stopCarTime = System.currentTimeMillis();
+						setDirectionButtonsVisible(false);
+					} else {
+						resetDirectionButtons();
 					}
-					resetDirectionButtons();
 				}
 			}
 			nextDirection = (direction + turn + 3) % 4;
@@ -295,11 +327,15 @@ public class BlinkerGame implements ApplicationListener {
 	}
 	
 	protected void goodTurn() {
-		score++;
+		score += historyIndex + 1;
+		if (score > hiScore) hiScore = score;
+		hiScoreLabel.setText(""+hiScore);
 		scoreLabel.setText(""+score);
-		plusone.setPosition((camera.viewportWidth-PLUSONE_SIZE)/2, (camera.viewportHeight-PLUSONE_SIZE)/2);
-		plusone.addAction(newMoveByAction(0.6f, 0f, 20f));
-		plusone.addAction(new SequenceAction(newFadeAction(0.1f, 1f), newDelayAction(0.25f, newFadeAction(0.25f, 0f))));
+		plusLabel.setText("+"+(historyIndex+1));
+		plusLabel.needsLayout();
+		plusLabel.setPosition((camera.viewportWidth-plusLabel.getPrefWidth())/2, (camera.viewportHeight-plusLabel.getPrefHeight())/2);
+		plusLabel.addAction(newMoveByAction(0.6f, 0f, 20f));
+		plusLabel.addAction(new SequenceAction(newFadeAction(0.1f, 1f), newDelayAction(0.25f, newFadeAction(0.25f, 0f))));
 	}
 	
 	protected void gameOver() {
@@ -308,17 +344,19 @@ public class BlinkerGame implements ApplicationListener {
 		gameover.addAction(newFadeAction(1f, 1f));
 	}
 	
-	protected void setDirectionButtonsVisible(boolean visible) {
-		buttonLeft.setVisible(visible);
-		buttonRight.setVisible(visible);
-	}
-	
 	protected void enterNewState(GameState newState) {
 		gameState = newState;
 		firstRender = 0;
 		stopCarTime = 0;
 		historyIndex = 0;
+		if (newState.equals(GameState.drive)) {
+			score = 0;
+			scoreLabel.setText("0");
+		} else {
+			scoreLabel.setText("");
+		}
 		setStartPosition();
+		resetDirectionButtons();
 		setDirectionButtonsVisible(newState.equals(GameState.drive));
 	}
 	
@@ -345,7 +383,7 @@ public class BlinkerGame implements ApplicationListener {
 		long now = System.currentTimeMillis();
 		int appTime = (int)(now - firstRender);
 
-		float maxSpeed = 0.15f + 0.20f * Math.min(1f, directionHistory.size() / 7f);
+		float maxSpeed = 0.15f + 0.15f * Math.min(1f, directionHistory.size() / 7f);
 		float speed = maxSpeed * Math.min(1f, Math.max(0f,  appTime - START_DELAY) / 1000f);
 		if (stopCarTime > 0) {
 			speed = maxSpeed * Math.max(0f,  750 - (now - stopCarTime)) / 750;
@@ -379,7 +417,9 @@ public class BlinkerGame implements ApplicationListener {
 			default:
 				return;
 		}
-		image.addAction(new SequenceAction(newFadeAction(0.25f, 1f), newDelayAction(2f, newFadeAction(0.25f, 0f))));
+		image.addAction(new SequenceAction(
+				newFadeAction(0.25f, 1f),
+				newDelayAction(2f, newFadeAction(0.25f, 0f))));
 		setDirectionButtonsVisible(gameState.equals(GameState.drive));
 	}
 	
@@ -402,7 +442,7 @@ public class BlinkerGame implements ApplicationListener {
 		mba.setAmount(x, y);
 		return mba;
 	}
-
+	
 	@Override
 	public void resize(int w, int h) {
 		lastRender = 0;
@@ -410,7 +450,12 @@ public class BlinkerGame implements ApplicationListener {
 		constructCamera(w, h);
 		stage.setViewport(camera.viewportWidth, camera.viewportHeight);
 		
+		setFixedScreenPositions();
 		resetDirectionButtons();
+		
+		if (gameOver || !gameState.equals(GameState.drive)) {
+			setDirectionButtonsVisible(false);
+		}
 	}
 
 	@Override
@@ -419,5 +464,6 @@ public class BlinkerGame implements ApplicationListener {
 
 	@Override
 	public void resume() {
+		lastRender = System.currentTimeMillis();
 	}
 }
