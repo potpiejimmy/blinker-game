@@ -139,8 +139,7 @@ public class BlinkerGame implements ApplicationListener {
 		drive = newScreenImageActor(textureDrive, VIEWPORT_SIZE);
 		gameover = newScreenImageActor(textureGameOver, VIEWPORT_SIZE);
 		
-		font = new BitmapFont();
-		font.setScale(6f); // XXX replace
+		font = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
 		
 		// -------------------
 
