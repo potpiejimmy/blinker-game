@@ -236,8 +236,6 @@ public class BlinkerGame implements ApplicationListener {
 	protected void setDirectionButtonsVisible(boolean visible) {
 		buttonLeft.setVisible(visible);
 		buttonRight.setVisible(visible);
-		buttonLeft.setDisabled(!visible);
-		buttonRight.setDisabled(!visible);
 	}
 	
 	@Override
