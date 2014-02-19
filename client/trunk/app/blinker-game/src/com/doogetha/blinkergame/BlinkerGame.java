@@ -52,11 +52,12 @@ public class BlinkerGame implements ApplicationListener {
 	
 	private GameState gameState = GameState.memorize; 
 	
-	protected final static int VIRTUAL_TILE_SIZE = 200;
+	protected final static int VIRTUAL_TILE_SIZE = 2000;
 	protected final static int VIEWPORT_SIZE = VIRTUAL_TILE_SIZE / 2;
-	protected final static int BUTTON_SIZE = 30;
-	protected final static int PLUSONE_SIZE = 20;
+	protected final static int BUTTON_SIZE = 300;
+	
 	protected final static int START_DELAY = 2500;
+	protected final static float SPEED_BASE = 1.5f;
 	
 	private int direction = 0;
 	private int nextDirection = -1;
@@ -114,10 +115,15 @@ public class BlinkerGame implements ApplicationListener {
 		textureRoad.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
 		textureCar = new Texture(Gdx.files.internal("data/car.png"));
+		textureCar.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		textureGetReady = new Texture(Gdx.files.internal("data/getready.png"));
+		textureGetReady.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		textureDrive = new Texture(Gdx.files.internal("data/driveroute.png"));
+		textureDrive.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		textureGameOver = new Texture(Gdx.files.internal("data/gameover.png"));
+		textureGameOver.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		texturePlusOne = new Texture(Gdx.files.internal("data/plusone.png"));
+		texturePlusOne.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		road = new Sprite(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
 		road.setSize(3f * VIRTUAL_TILE_SIZE, 3f * VIRTUAL_TILE_SIZE);
@@ -134,7 +140,7 @@ public class BlinkerGame implements ApplicationListener {
 		gameover = newScreenImageActor(textureGameOver, VIEWPORT_SIZE);
 		
 		font = new BitmapFont();
-		font.setScale(0.6f);
+		font.setScale(6f); // XXX replace
 		
 		// -------------------
 
@@ -162,7 +168,7 @@ public class BlinkerGame implements ApplicationListener {
 		buttonRight.addListener(new DirectionButtonListener(buttonRight, buttonLeft));
 		
 		hiScoreLabel = new Label("0", new Label.LabelStyle(font, Color.YELLOW));
-		scoreLabel = new Label("0", new Label.LabelStyle(font, Color.YELLOW));
+		scoreLabel = new Label(" ", new Label.LabelStyle(font, Color.YELLOW));
 		plusLabel = new Label("+1", new Label.LabelStyle(font, Color.YELLOW));
 		makeAlphaInvisible(plusLabel);
 		
@@ -181,8 +187,8 @@ public class BlinkerGame implements ApplicationListener {
 	}
 	
 	protected void setFixedScreenPositions() {
-		hiScoreLabel.setPosition(5, camera.viewportHeight - 15);
-		scoreLabel.setPosition(5, camera.viewportHeight - 27);
+		hiScoreLabel.setPosition(50, camera.viewportHeight - 150);
+		scoreLabel.setPosition(50, camera.viewportHeight - 250);
 		centerOnScreen(getready);
 		centerOnScreen(drive);
 		centerOnScreen(gameover);
@@ -334,7 +340,7 @@ public class BlinkerGame implements ApplicationListener {
 		plusLabel.setText("+"+(historyIndex+1));
 		plusLabel.needsLayout();
 		plusLabel.setPosition((camera.viewportWidth-plusLabel.getPrefWidth())/2, (camera.viewportHeight-plusLabel.getPrefHeight())/2);
-		plusLabel.addAction(newMoveByAction(0.6f, 0f, 20f));
+		plusLabel.addAction(newMoveByAction(0.6f, 0f, 200));
 		plusLabel.addAction(new SequenceAction(newFadeAction(0.1f, 1f), newDelayAction(0.25f, newFadeAction(0.25f, 0f))));
 	}
 	
@@ -383,7 +389,7 @@ public class BlinkerGame implements ApplicationListener {
 		long now = System.currentTimeMillis();
 		int appTime = (int)(now - firstRender);
 
-		float maxSpeed = 0.15f + 0.15f * Math.min(1f, directionHistory.size() / 7f);
+		float maxSpeed = SPEED_BASE + SPEED_BASE * Math.min(1f, directionHistory.size() / 7f);
 		float speed = maxSpeed * Math.min(1f, Math.max(0f,  appTime - START_DELAY) / 1000f);
 		if (stopCarTime > 0) {
 			speed = maxSpeed * Math.max(0f,  750 - (now - stopCarTime)) / 750;
@@ -392,6 +398,7 @@ public class BlinkerGame implements ApplicationListener {
 		
 		if (lastRender > 0) {
 			int elapsed = Math.min((int)(now - lastRender), 200);
+			//System.out.println(1000f/elapsed + "fps");
 			float offset = (float)elapsed * speed;
 			moveScreen(offset);
 		}
