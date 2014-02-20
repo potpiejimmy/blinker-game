@@ -1,7 +1,9 @@
 package com.doogetha.blinkergame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.doogetha.blinkergame.screens.GameScreen;
+import com.doogetha.blinkergame.screens.StartScreen;
 
 public class BlinkerGame extends Game {
 
@@ -11,11 +13,16 @@ public class BlinkerGame extends Game {
 	
 	public Assets assets = null;
 	
+	public Screen startScreen, gameScreen;
+	
 	@Override
 	public void create() {
 		assets = new Assets();
+
+		startScreen = new StartScreen(this);
+		gameScreen = new GameScreen(this);
 		
-		setScreen(new GameScreen(this));
+		setScreen(gameScreen);
 	}
 	
 	@Override

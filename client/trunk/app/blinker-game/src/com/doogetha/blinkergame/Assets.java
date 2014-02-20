@@ -19,7 +19,8 @@ public class Assets {
 	public Texture textureRoad, textureCar;
 	public Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
 	public Texture textureGetReady, textureDrive, textureGameOver, texturePlusOne;
-	public Button buttonLeft, buttonRight;
+	public Texture textureStartButton;
+	public Button buttonLeft, buttonRight, startButton;
 	public Image road, car;
 	public BitmapFont font;
 	public Image getready, drive, gameover;
@@ -58,12 +59,14 @@ public class Assets {
 		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));
 		buttonRightOff = new Texture(Gdx.files.internal("data/buttonright_off.png"));
 		buttonRightOn = new Texture(Gdx.files.internal("data/buttonright_on.png"));
+		textureStartButton = new Texture(Gdx.files.internal("data/startbutton.png"));
 
 		buttonLeft = new Button(new TextureRegionDrawable(new TextureRegion(buttonLeftOff)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)));
 		buttonLeft.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
-		
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
 		buttonRight.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
+		startButton = new Button(new TextureRegionDrawable(new TextureRegion(textureStartButton)));
+		startButton.setSize(BlinkerGame.BUTTON_SIZE*2, BlinkerGame.BUTTON_SIZE*2);
 		
 		scoreLabel = new Label(" ", new Label.LabelStyle(font, Color.YELLOW));
 		plusLabel = new Label("+1", new Label.LabelStyle(font, Color.YELLOW));
@@ -77,6 +80,7 @@ public class Assets {
 		textureDrive.dispose();
 		textureGameOver.dispose();
 		texturePlusOne.dispose();
+		textureStartButton.dispose();
 		buttonLeftOff.dispose();
 		buttonLeftOn.dispose();
 		buttonRightOff.dispose();

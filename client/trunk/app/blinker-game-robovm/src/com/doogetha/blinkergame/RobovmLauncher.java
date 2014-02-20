@@ -10,8 +10,8 @@ public class RobovmLauncher extends IOSApplication.Delegate {
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-		config.orientationLandscape = true;
-		config.orientationPortrait = false;
+		config.orientationLandscape = false;
+		config.orientationPortrait = true;
 		return new IOSApplication(new BlinkerGame(), config);
 	}
 

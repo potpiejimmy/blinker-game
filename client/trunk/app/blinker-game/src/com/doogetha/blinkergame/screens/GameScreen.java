@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -18,12 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.Utils;
 
-public class GameScreen implements Screen {
-	
-	private BlinkerGame app;
-	
-	private OrthographicCamera camera;
-	private Stage stage;
+public class GameScreen extends AbstractScreen {
 	
 	protected static enum GameState {
 		memorize,
@@ -79,24 +71,11 @@ public class GameScreen implements Screen {
 	}
 	
 	public GameScreen(BlinkerGame app) {
+		super(app);
 		
-		this.app = app;
-		
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
-
-		constructCamera(w, h);
-		
-		// -------------------
-
 		directionHistory.add(random.nextInt(2) * 2); // left or right only
 		directionHistory.add(random.nextInt(2) * 2); // left or right only
 		setStartPosition();
-		
-		// -------------------
-		
-		stage = new Stage(camera.viewportWidth, camera.viewportHeight);
-		Gdx.input.setInputProcessor(stage);
 		
 		app.assets.buttonLeft.addListener(new DirectionButtonListener(app.assets.buttonLeft, app.assets.buttonRight));
 		app.assets.buttonRight.addListener(new DirectionButtonListener(app.assets.buttonRight, app.assets.buttonLeft));
@@ -139,13 +118,6 @@ public class GameScreen implements Screen {
 		direction = 0;
 	}
 	
-	protected void constructCamera(float w, float h) {
-		if (h > w)
-			camera = new OrthographicCamera(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE*h/w);
-		else
-			camera = new OrthographicCamera(BlinkerGame.VIEWPORT_SIZE*w/h, BlinkerGame.VIEWPORT_SIZE);
-	}
-	
 	protected void resetDirectionButtons() {
 		app.assets.buttonLeft.setPosition(0, 0);
 		app.assets.buttonRight.setPosition(camera.viewportWidth - BlinkerGame.BUTTON_SIZE, 0);
@@ -159,11 +131,6 @@ public class GameScreen implements Screen {
 		app.assets.buttonRight.setVisible(visible);
 	}
 	
-	@Override
-	public void dispose() {
-		stage.dispose();
-	}
-
 	protected void moveScreen(float offset) {
 		switch (direction) {
 		case 0: // up
@@ -334,11 +301,10 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void resize(int w, int h) {
+		super.resize(w, h);
+		
 		lastRender = 0;
 
-		constructCamera(w, h);
-		stage.setViewport(camera.viewportWidth, camera.viewportHeight);
-		
 		setFixedScreenPositions();
 		resetDirectionButtons();
 		
