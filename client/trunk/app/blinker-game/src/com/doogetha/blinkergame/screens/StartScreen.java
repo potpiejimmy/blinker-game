@@ -11,10 +11,8 @@ public class StartScreen extends AbstractScreen {
 
 	public StartScreen(BlinkerGame game) {
 		super(game);
-		
-		app.assets.startButton.setPosition((camera.viewportWidth - app.assets.startButton.getWidth())/2, 0);
-		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - camera.viewportWidth)/2, -(app.assets.startScreenBackground.getHeight() - camera.viewportHeight)/2);
-		app.assets.startScreenCar.setPosition((camera.viewportWidth-app.assets.startScreenCar.getWidth())/2, (camera.viewportHeight-app.assets.startScreenCar.getHeight())/2);
+
+		setFixedPositions();
 		
 		stage.addActor(app.assets.startScreenBackground);
 		stage.addActor(app.assets.startScreenCar);
@@ -27,6 +25,12 @@ public class StartScreen extends AbstractScreen {
 				return true;
 			}
 		});
+	}
+	
+	protected void setFixedPositions() {
+		app.assets.startButton.setPosition((camera.viewportWidth - app.assets.startButton.getWidth())/2, 0);
+		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - camera.viewportWidth)/2, -(app.assets.startScreenBackground.getHeight() - camera.viewportHeight)/2);
+		app.assets.startScreenCar.setPosition((camera.viewportWidth-app.assets.startScreenCar.getWidth())/2, (camera.viewportHeight-app.assets.startScreenCar.getHeight())/2);
 	}
 	
 	@Override
@@ -42,6 +46,7 @@ public class StartScreen extends AbstractScreen {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+		setFixedPositions();
 	}
 	
 	@Override
