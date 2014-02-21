@@ -22,8 +22,6 @@ public abstract class AbstractScreen implements Screen {
 		constructCamera(w, h);
 		
 		stage = new Stage(camera.viewportWidth, camera.viewportHeight);
-		Gdx.input.setInputProcessor(stage);
-		
 	}
 
 	protected void constructCamera(float w, float h) {
@@ -42,5 +40,23 @@ public abstract class AbstractScreen implements Screen {
 	public void resize(int w, int h) {
 		constructCamera(w, h);
 		stage.setViewport(camera.viewportWidth, camera.viewportHeight);
-	}	
+	}
+	
+	@Override
+	public void show() {
+		Gdx.input.setInputProcessor(stage);
+	}
+
+	@Override
+	public void hide() {
+		Gdx.input.setInputProcessor(null);
+	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
+	}
 }

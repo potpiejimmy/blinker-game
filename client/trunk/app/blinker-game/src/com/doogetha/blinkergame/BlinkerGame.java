@@ -22,7 +22,7 @@ public class BlinkerGame extends Game {
 		startScreen = new StartScreen(this);
 		gameScreen = new GameScreen(this);
 		
-		setScreen(gameScreen);
+		setScreen(startScreen);
 	}
 	
 	@Override

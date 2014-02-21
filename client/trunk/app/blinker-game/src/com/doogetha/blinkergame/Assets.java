@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Assets {
@@ -22,6 +21,7 @@ public class Assets {
 	public Texture textureStartButton;
 	public Button buttonLeft, buttonRight, startButton;
 	public Image road, car;
+	public Image startScreenBackground, startScreenCar;
 	public BitmapFont font;
 	public Image getready, drive, gameover;
 	public Label scoreLabel, plusLabel;
@@ -49,6 +49,13 @@ public class Assets {
 		car.setSize(0.4f * BlinkerGame.VIEWPORT_SIZE, 0.4f * BlinkerGame.VIEWPORT_SIZE);
 		car.setOrigin(car.getWidth()/2, car.getHeight()/2);
 		
+		startScreenBackground = new Image(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
+		startScreenBackground.setSize(3f * BlinkerGame.VIRTUAL_TILE_SIZE, 3f * BlinkerGame.VIRTUAL_TILE_SIZE);
+
+		startScreenCar = new Image(new TextureRegion(textureCar));
+		startScreenCar.setSize(0.4f * BlinkerGame.VIEWPORT_SIZE, 0.4f * BlinkerGame.VIEWPORT_SIZE);
+		startScreenCar.setOrigin(car.getWidth()/2, car.getHeight()/2);
+		
 		getready = newScreenImageActor(textureGetReady, BlinkerGame.VIEWPORT_SIZE);
 		drive = newScreenImageActor(textureDrive, BlinkerGame.VIEWPORT_SIZE);
 		gameover = newScreenImageActor(textureGameOver, BlinkerGame.VIEWPORT_SIZE);
@@ -70,7 +77,7 @@ public class Assets {
 		
 		scoreLabel = new Label(" ", new Label.LabelStyle(font, Color.YELLOW));
 		plusLabel = new Label("+1", new Label.LabelStyle(font, Color.YELLOW));
-		makeAlphaInvisible(plusLabel);
+		Utils.makeAlphaInvisible(plusLabel);
 	}
 	
 	public void dispose() {
@@ -91,15 +98,8 @@ public class Assets {
 	protected Image newScreenImageActor(Texture texture, float size) {
 		Image img = new Image(new TextureRegion(texture));
 		img.setSize(size, size);
-		makeAlphaInvisible(img);
+		Utils.makeAlphaInvisible(img);
 		img.setTouchable(Touchable.disabled);
 		return img;
 	}
-	
-	protected static void makeAlphaInvisible(Widget widget) {
-		Color c = widget.getColor();
-		widget.setColor(c.r, c.g, c.b, 0f); // invisible alpha
-	}
-	
-
 }

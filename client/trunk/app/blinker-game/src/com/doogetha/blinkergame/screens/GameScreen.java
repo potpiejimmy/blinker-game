@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -70,15 +71,19 @@ public class GameScreen extends AbstractScreen {
 	    }
 	}
 	
-	public GameScreen(BlinkerGame app) {
-		super(app);
-		
-		directionHistory.add(random.nextInt(2) * 2); // left or right only
-		directionHistory.add(random.nextInt(2) * 2); // left or right only
-		setStartPosition();
+	public GameScreen(BlinkerGame game) {
+		super(game);
 		
 		app.assets.buttonLeft.addListener(new DirectionButtonListener(app.assets.buttonLeft, app.assets.buttonRight));
 		app.assets.buttonRight.addListener(new DirectionButtonListener(app.assets.buttonRight, app.assets.buttonLeft));
+		app.assets.gameover.addListener(new InputListener() {
+			@Override
+		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				Utils.fadeVisibility(app.assets.road, 0f, 0.5f, false);
+				Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, false);
+				return false;
+			}
+		});
 		
 		setFixedScreenPositions();
 		
@@ -91,8 +96,6 @@ public class GameScreen extends AbstractScreen {
 		stage.addActor(app.assets.getready);
 		stage.addActor(app.assets.drive);
 		stage.addActor(app.assets.gameover);
-
-		resetDirectionButtons();
 	}
 	
 	protected void setFixedScreenPositions() {
@@ -209,9 +212,13 @@ public class GameScreen extends AbstractScreen {
 		Utils.fadeVisibility(app.assets.road, 1.5f, 0.25f, false);
 	}
 	
-	protected void goodTurn() {
-		score += historyIndex + 1;
+	protected void updateScore(int newScore) {
+		this.score = newScore;
 		app.assets.scoreLabel.setText(""+score);
+	}
+	
+	protected void goodTurn() {
+		updateScore(score + historyIndex+1);
 		app.assets.plusLabel.setText("+"+(historyIndex+1));
 		app.assets.plusLabel.needsLayout();
 		app.assets.plusLabel.setPosition((camera.viewportWidth-app.assets.plusLabel.getPrefWidth())/2, (camera.viewportHeight-app.assets.plusLabel.getPrefHeight())/2);
@@ -224,6 +231,7 @@ public class GameScreen extends AbstractScreen {
 		stopCarTime = System.currentTimeMillis();
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
+		app.assets.gameover.setTouchable(Touchable.enabled);
 	}
 	
 	protected void enterNewState(GameState newState) {
@@ -246,6 +254,8 @@ public class GameScreen extends AbstractScreen {
 			case drive:
 				if (!gameOver) {
 					enterNewState(GameState.memorize);
+				} else {
+					app.setScreen(app.startScreen);
 				}
 				break;
 		}
@@ -314,19 +324,30 @@ public class GameScreen extends AbstractScreen {
 	}
 
 	@Override
+	public void show() {
+		super.show();
+		resetDirectionButtons();
+		setDirectionButtonsVisible(false);
+		gameOver = false;
+		Utils.makeAlphaInvisible(app.assets.gameover);
+		app.assets.gameover.setTouchable(Touchable.disabled);
+		updateScore(0);
+		lastRender = 0;
+		directionHistory.clear();
+		directionHistory.add(random.nextInt(2) * 2); // left or right only
+		directionHistory.add(random.nextInt(2) * 2); // left or right only
+		setStartPosition();
+		Utils.fadeVisibility(stage.getRoot(), 0f, 0f, true);
+	}
+	
+	@Override
 	public void pause() {
+		super.pause();
 	}
 
 	@Override
 	public void resume() {
+		super.resume();
 		lastRender = System.currentTimeMillis();
-	}
-
-	@Override
-	public void hide() {
-	}
-
-	@Override
-	public void show() {
 	}
 }

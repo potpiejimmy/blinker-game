@@ -1,5 +1,6 @@
 package com.doogetha.blinkergame;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
@@ -44,5 +45,10 @@ public class Utils {
 		VisibleAction va = new VisibleAction();
 		va.setVisible(visible);
 		return va;
+	}
+	
+	public static void makeAlphaInvisible(Actor widget) {
+		Color c = widget.getColor();
+		widget.setColor(c.r, c.g, c.b, 0f); // invisible alpha
 	}
 }

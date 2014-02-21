@@ -5,28 +5,28 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.doogetha.blinkergame.BlinkerGame;
+import com.doogetha.blinkergame.Utils;
 
 public class StartScreen extends AbstractScreen {
 
 	public StartScreen(BlinkerGame game) {
 		super(game);
 		
+		app.assets.startButton.setPosition((camera.viewportWidth - app.assets.startButton.getWidth())/2, 0);
+		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - camera.viewportWidth)/2, -(app.assets.startScreenBackground.getHeight() - camera.viewportHeight)/2);
+		app.assets.startScreenCar.setPosition((camera.viewportWidth-app.assets.startScreenCar.getWidth())/2, (camera.viewportHeight-app.assets.startScreenCar.getHeight())/2);
+		
+		stage.addActor(app.assets.startScreenBackground);
+		stage.addActor(app.assets.startScreenCar);
+		stage.addActor(app.assets.startButton);
+
 		app.assets.startButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-//				System.out.println("Button pressed");
 				app.setScreen(app.gameScreen);
 				return true;
 			}
 		});
-
-		app.assets.startButton.setPosition((camera.viewportWidth - app.assets.startButton.getWidth())/2, 0);
-		app.assets.road.setPosition(-(app.assets.road.getWidth() - camera.viewportWidth)/2, -(app.assets.road.getHeight() - camera.viewportHeight)/2);
-		app.assets.car.setPosition((camera.viewportWidth-app.assets.car.getWidth())/2, (camera.viewportHeight-app.assets.car.getHeight())/2);
-		
-		stage.addActor(app.assets.road);
-		stage.addActor(app.assets.car);
-		stage.addActor(app.assets.startButton);
 	}
 	
 	@Override
@@ -43,20 +43,18 @@ public class StartScreen extends AbstractScreen {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 	}
-
+	
 	@Override
 	public void show() {
-	}
+		super.show();
 
+		stage.getRoot().setVisible(false);
+		Utils.makeAlphaInvisible(stage.getRoot());
+		Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, true);
+	}
+	
 	@Override
 	public void hide() {
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
+		super.hide();
 	}
 }
