@@ -200,8 +200,7 @@ public class GameScreen extends AbstractScreen {
 
 		if (nextDirection >= 0) {
 			int turnDir = nextDirection - direction;
-			if (turnDir == -3) turnDir = 1;
-			else if (turnDir == 3) turnDir = -1;
+			if (Math.abs(turnDir)==3) turnDir /= -3;
 			float crossRoadsOffset = BlinkerGame.VIRTUAL_TILE_SIZE - combinedOffset;
 			app.assets.car.rotate(-turnDir * (1.0f - crossRoadsOffset / 0.1f / BlinkerGame.VIRTUAL_TILE_SIZE) * 90f);
 		}
