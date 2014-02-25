@@ -2,6 +2,7 @@ package com.doogetha.blinkergame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.doogetha.blinkergame.screens.EnterBetScreen;
 import com.doogetha.blinkergame.screens.GameScreen;
 import com.doogetha.blinkergame.screens.StartScreen;
 
@@ -13,13 +14,16 @@ public class BlinkerGame extends Game {
 	
 	public Assets assets = null;
 	
-	public Screen startScreen, gameScreen;
+	private int bet = 0;
+	
+	public Screen startScreen, enterBetScreen, gameScreen;
 	
 	@Override
 	public void create() {
 		assets = new Assets();
 
 		startScreen = new StartScreen(this);
+		enterBetScreen = new EnterBetScreen(this);
 		gameScreen = new GameScreen(this);
 		
 		setScreen(startScreen);
@@ -30,5 +34,13 @@ public class BlinkerGame extends Game {
 		super.dispose();
 		
 		assets.dispose();
+	}
+
+	public int getBet() {
+		return bet;
+	}
+
+	public void setBet(int bet) {
+		this.bet = bet;
 	}
 }

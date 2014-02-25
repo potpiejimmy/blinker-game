@@ -92,6 +92,7 @@ public class GameScreen extends AbstractScreen {
 		stage.addActor(app.assets.buttonLeft);
 		stage.addActor(app.assets.buttonRight);
 		stage.addActor(app.assets.scoreLabel);
+		stage.addActor(app.assets.betLabel);
 		stage.addActor(app.assets.plusLabel);
 		stage.addActor(app.assets.getready);
 		stage.addActor(app.assets.drive);
@@ -104,6 +105,7 @@ public class GameScreen extends AbstractScreen {
 		app.assets.road.setPosition(roadCenterX + x, roadCenterY + y);
 		app.assets.car.setPosition((camera.viewportWidth-app.assets.car.getWidth())/2, (camera.viewportHeight-app.assets.car.getHeight())/2);
 		app.assets.scoreLabel.setPosition(50, camera.viewportHeight - 150);
+		app.assets.betLabel.setPosition(50, camera.viewportHeight - 250);
 		centerOnScreen(app.assets.getready);
 		centerOnScreen(app.assets.drive);
 		centerOnScreen(app.assets.gameover);
@@ -211,8 +213,18 @@ public class GameScreen extends AbstractScreen {
 		Utils.fadeVisibility(app.assets.road, 1.5f, 0.25f, false);
 	}
 	
+	protected void fadeBetLabel(boolean up) {
+		Utils.fadeVisibility(app.assets.betLabel, 0f, 0.5f, false);
+		app.assets.betLabel.addAction(Utils.newMoveByAction(0.5f, 0, up?90:-90));
+	}
+	
 	protected void updateScore(int newScore) {
-		this.score = newScore;
+		int bet = app.getBet();
+		if (score < bet && newScore >= bet) {
+			newScore += bet;
+			fadeBetLabel(true);
+		}
+		score = newScore;
 		app.assets.scoreLabel.setText(""+score);
 	}
 	
@@ -231,6 +243,10 @@ public class GameScreen extends AbstractScreen {
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
 		app.assets.gameover.setTouchable(Touchable.enabled);
+		if (score < app.getBet()) {
+			updateScore(0);
+			fadeBetLabel(false);
+		}
 	}
 	
 	protected void enterNewState(GameState newState) {
@@ -331,6 +347,8 @@ public class GameScreen extends AbstractScreen {
 		Utils.makeAlphaInvisible(app.assets.gameover);
 		app.assets.gameover.setTouchable(Touchable.disabled);
 		updateScore(0);
+		app.assets.betLabel.setText("+"+app.getBet());
+		Utils.fadeVisibility(app.assets.betLabel, 0f, 0f, true);
 		lastRender = 0;
 		directionHistory.clear();
 		directionHistory.add(random.nextInt(2) * 2); // left or right only

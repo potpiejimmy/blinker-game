@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Assets {
@@ -22,9 +24,9 @@ public class Assets {
 	public Button buttonLeft, buttonRight, startButton;
 	public Image road, car;
 	public Image startScreenBackground, startScreenCar;
-	public BitmapFont font;
+	public BitmapFont font, scoreFont;
 	public Image getready, drive, gameover;
-	public Label scoreLabel, plusLabel;
+	public Label scoreLabel, plusLabel, betLabel;
 	
 	public Assets() {
 		textureRoad = new Texture(Gdx.files.internal("data/road.png"));
@@ -49,8 +51,8 @@ public class Assets {
 		car.setSize(0.4f * BlinkerGame.VIEWPORT_SIZE, 0.4f * BlinkerGame.VIEWPORT_SIZE);
 		car.setOrigin(car.getWidth()/2, car.getHeight()/2);
 		
-		startScreenBackground = new Image(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
-		startScreenBackground.setSize(3f * BlinkerGame.VIRTUAL_TILE_SIZE, 3f * BlinkerGame.VIRTUAL_TILE_SIZE);
+		startScreenBackground = new Image(new TextureRegion(textureRoad));
+		startScreenBackground.setSize(BlinkerGame.VIRTUAL_TILE_SIZE, BlinkerGame.VIRTUAL_TILE_SIZE);
 
 		startScreenCar = new Image(new TextureRegion(textureCar));
 		startScreenCar.setSize(0.4f * BlinkerGame.VIEWPORT_SIZE, 0.4f * BlinkerGame.VIEWPORT_SIZE);
@@ -60,7 +62,8 @@ public class Assets {
 		drive = newScreenImageActor(textureDrive, BlinkerGame.VIEWPORT_SIZE);
 		gameover = newScreenImageActor(textureGameOver, BlinkerGame.VIEWPORT_SIZE);
 		
-		font = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
+		font = new BitmapFont(Gdx.files.internal("data/menufont.fnt")); // size 72
+		scoreFont = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
 		
 		buttonLeftOff = new Texture(Gdx.files.internal("data/buttonleft_off.png"));
 		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));
@@ -72,11 +75,16 @@ public class Assets {
 		buttonLeft.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
 		buttonRight.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
-		startButton = new Button(new TextureRegionDrawable(new TextureRegion(textureStartButton)));
-		startButton.setSize(BlinkerGame.BUTTON_SIZE*2, BlinkerGame.BUTTON_SIZE*2);
+		startButton = new TextButton("START GAME", new TextButtonStyle(
+				new TextureRegionDrawable(new TextureRegion(textureStartButton)),
+				new TextureRegionDrawable(new TextureRegion(textureStartButton)),
+				new TextureRegionDrawable(new TextureRegion(textureStartButton)),
+				font));
+		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 		
-		scoreLabel = new Label(" ", new Label.LabelStyle(font, Color.YELLOW));
-		plusLabel = new Label("+1", new Label.LabelStyle(font, Color.YELLOW));
+		scoreLabel = new Label(" ", new Label.LabelStyle(scoreFont, Color.YELLOW));
+		plusLabel = new Label("+1", new Label.LabelStyle(scoreFont, Color.YELLOW));
+		betLabel = new Label("+100", new Label.LabelStyle(scoreFont, Color.YELLOW));
 		Utils.makeAlphaInvisible(plusLabel);
 	}
 	
@@ -93,6 +101,7 @@ public class Assets {
 		buttonRightOff.dispose();
 		buttonRightOn.dispose();
 		font.dispose();
+		scoreFont.dispose();
 	}
 	
 	protected Image newScreenImageActor(Texture texture, float size) {
