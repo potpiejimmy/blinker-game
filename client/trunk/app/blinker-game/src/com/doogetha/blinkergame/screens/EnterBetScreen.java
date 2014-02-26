@@ -25,7 +25,7 @@ public class EnterBetScreen extends AbstractScreen {
 	public EnterBetScreen(BlinkerGame game) {
 		super(game);
 
-		goButton = new TextButton("GO!", new TextButtonStyle(
+		goButton = new TextButton("Go !", new TextButtonStyle(
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),
 				null,
@@ -41,7 +41,7 @@ public class EnterBetScreen extends AbstractScreen {
 		betField.setCursorPosition(betField.getText().length());
 		betField.setSize(BlinkerGame.VIEWPORT_SIZE, 90);
 
-		betLabel = new Label("ENTER BET:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
+		betLabel = new Label("Enter your bet:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
 		
 		setFixedPositions();
 		
@@ -64,10 +64,10 @@ public class EnterBetScreen extends AbstractScreen {
 
 	protected void setFixedPositions() {
 		float buttonPosX = (camera.viewportWidth - goButton.getWidth())/2;
-		float buttonPosY = camera.viewportHeight/2 - 50;
+		float buttonPosY = camera.viewportHeight/2 + 50;
 		goButton.setPosition(buttonPosX, camera.viewportHeight/2);
-		betField.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + 60);
-		betLabel.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + betField.getHeight() + 70);
+		betField.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() - 20);
+		betLabel.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + betField.getHeight() - 20);
 	}
 	
 	@Override

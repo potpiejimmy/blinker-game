@@ -76,7 +76,7 @@ public class Assets {
 		buttonLeft.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
 		buttonRight.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
-		startButton = new TextButton("START GAME", new TextButtonStyle(
+		startButton = new TextButton("Start Game", new TextButtonStyle(
 				new TextureRegionDrawable(new TextureRegion(textureButtonUp)),
 				new TextureRegionDrawable(new TextureRegion(textureButtonDown)),null,
 				font));
