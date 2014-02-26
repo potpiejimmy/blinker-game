@@ -20,7 +20,7 @@ public class Assets {
 	public Texture textureRoad, textureCar;
 	public Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
 	public Texture textureGetReady, textureDrive, textureGameOver, texturePlusOne;
-	public Texture textureStartButton;
+	public Texture textureButtonUp, textureButtonDown;
 	public Button buttonLeft, buttonRight, startButton;
 	public Image road, car;
 	public Image startScreenBackground, startScreenCar;
@@ -62,23 +62,23 @@ public class Assets {
 		drive = newScreenImageActor(textureDrive, BlinkerGame.VIEWPORT_SIZE);
 		gameover = newScreenImageActor(textureGameOver, BlinkerGame.VIEWPORT_SIZE);
 		
-		font = new BitmapFont(Gdx.files.internal("data/menufont.fnt")); // size 72
+		font = new BitmapFont(Gdx.files.internal("data/menufont.fnt")); // size 90
 		scoreFont = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
 		
 		buttonLeftOff = new Texture(Gdx.files.internal("data/buttonleft_off.png"));
 		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));
 		buttonRightOff = new Texture(Gdx.files.internal("data/buttonright_off.png"));
 		buttonRightOn = new Texture(Gdx.files.internal("data/buttonright_on.png"));
-		textureStartButton = new Texture(Gdx.files.internal("data/startbutton.png"));
+		textureButtonUp = new Texture(Gdx.files.internal("data/mbuttonu.png"));
+		textureButtonDown = new Texture(Gdx.files.internal("data/mbuttond.png"));
 
 		buttonLeft = new Button(new TextureRegionDrawable(new TextureRegion(buttonLeftOff)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)), new TextureRegionDrawable(new TextureRegion(buttonLeftOn)));
 		buttonLeft.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
 		buttonRight.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
 		startButton = new TextButton("START GAME", new TextButtonStyle(
-				new TextureRegionDrawable(new TextureRegion(textureStartButton)),
-				new TextureRegionDrawable(new TextureRegion(textureStartButton)),
-				new TextureRegionDrawable(new TextureRegion(textureStartButton)),
+				new TextureRegionDrawable(new TextureRegion(textureButtonUp)),
+				new TextureRegionDrawable(new TextureRegion(textureButtonDown)),null,
 				font));
 		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 		
@@ -95,7 +95,8 @@ public class Assets {
 		textureDrive.dispose();
 		textureGameOver.dispose();
 		texturePlusOne.dispose();
-		textureStartButton.dispose();
+		textureButtonUp.dispose();
+		textureButtonDown.dispose();
 		buttonLeftOff.dispose();
 		buttonLeftOn.dispose();
 		buttonRightOff.dispose();

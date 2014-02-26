@@ -347,7 +347,7 @@ public class GameScreen extends AbstractScreen {
 		Utils.makeAlphaInvisible(app.assets.gameover);
 		app.assets.gameover.setTouchable(Touchable.disabled);
 		updateScore(0);
-		app.assets.betLabel.setText("+"+app.getBet());
+		app.assets.betLabel.setText(app.getBet()>0 ? "+"+app.getBet() : "");
 		Utils.fadeVisibility(app.assets.betLabel, 0f, 0f, true);
 		lastRender = 0;
 		directionHistory.clear();

@@ -26,9 +26,9 @@ public class EnterBetScreen extends AbstractScreen {
 		super(game);
 
 		goButton = new TextButton("GO!", new TextButtonStyle(
-				new TextureRegionDrawable(new TextureRegion(app.assets.textureStartButton)),
-				new TextureRegionDrawable(new TextureRegion(app.assets.textureStartButton)),
-				new TextureRegionDrawable(new TextureRegion(app.assets.textureStartButton)),
+				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
+				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),
+				null,
 				app.assets.font));
 		
 		Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -41,7 +41,7 @@ public class EnterBetScreen extends AbstractScreen {
 		betField.setCursorPosition(betField.getText().length());
 		betField.setSize(BlinkerGame.VIEWPORT_SIZE, 90);
 
-		betLabel = new Label("BET:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
+		betLabel = new Label("ENTER BET:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
 		
 		setFixedPositions();
 		
@@ -52,17 +52,22 @@ public class EnterBetScreen extends AbstractScreen {
 		goButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				try {app.setBet(Integer.parseInt(betField.getText()));} catch (NumberFormatException nfe) {}
-				app.setScreen(app.gameScreen);
 				return true;
 			}
+			@Override
+		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				try {app.setBet(Integer.parseInt(betField.getText()));} catch (NumberFormatException nfe) {}
+				app.setScreen(app.gameScreen);
+		    }
 		});
 	}
 
 	protected void setFixedPositions() {
-		goButton.setPosition((camera.viewportWidth - goButton.getWidth())/2, camera.viewportHeight/2);
-		betField.setPosition((camera.viewportWidth - betField.getPrefWidth())/2, camera.viewportHeight/2 + goButton.getHeight() + 100);
-		betLabel.setPosition((camera.viewportWidth - goButton.getPrefWidth())/2 + 80, camera.viewportHeight/2 + goButton.getHeight() + 90);
+		float buttonPosX = (camera.viewportWidth - goButton.getWidth())/2;
+		float buttonPosY = camera.viewportHeight/2 - 50;
+		goButton.setPosition(buttonPosX, camera.viewportHeight/2);
+		betField.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + 60);
+		betLabel.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + betField.getHeight() + 70);
 	}
 	
 	@Override

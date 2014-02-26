@@ -22,9 +22,13 @@ public class StartScreen extends AbstractScreen {
 		app.assets.startButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				app.setScreen(app.enterBetScreen);
 				return true;
 			}
+			
+			@Override
+		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				app.setScreen(app.enterBetScreen);
+		    }
 		});
 	}
 	
