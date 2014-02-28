@@ -8,8 +8,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "blinker-game";
 		cfg.useGL20 = false;
-		cfg.width = 240;
-		cfg.height = 400;
+		cfg.width = 360;
+		cfg.height = 600;
 		
 		new LwjglApplication(new BlinkerGame(), cfg);
 	}

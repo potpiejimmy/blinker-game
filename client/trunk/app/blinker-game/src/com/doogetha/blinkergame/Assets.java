@@ -1,6 +1,7 @@
 package com.doogetha.blinkergame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -27,6 +28,7 @@ public class Assets {
 	public BitmapFont font, scoreFont;
 	public Image getready, drive, gameover;
 	public Label scoreLabel, plusLabel, betLabel;
+	public Sound soundCoin;
 	
 	public Assets() {
 		textureRoad = new Texture(Gdx.files.internal("data/road.png"));
@@ -64,6 +66,8 @@ public class Assets {
 		
 		font = new BitmapFont(Gdx.files.internal("data/menufont.fnt")); // size 90
 		scoreFont = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
+		
+		soundCoin = Gdx.audio.newSound(Gdx.files.internal("data/coin.wav"));
 		
 		buttonLeftOff = new Texture(Gdx.files.internal("data/buttonleft_off.png"));
 		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));
@@ -103,6 +107,7 @@ public class Assets {
 		buttonRightOn.dispose();
 		font.dispose();
 		scoreFont.dispose();
+		soundCoin.dispose();
 	}
 	
 	protected Image newScreenImageActor(Texture texture, float size) {

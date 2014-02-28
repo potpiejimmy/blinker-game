@@ -229,6 +229,7 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	protected void goodTurn() {
+		app.assets.soundCoin.play();
 		updateScore(score + historyIndex+1);
 		app.assets.plusLabel.setText("+"+(historyIndex+1));
 		app.assets.plusLabel.needsLayout();
