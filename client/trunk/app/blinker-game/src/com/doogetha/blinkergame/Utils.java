@@ -1,6 +1,7 @@
 package com.doogetha.blinkergame;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
@@ -8,6 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Utils {
 	
@@ -50,5 +55,12 @@ public class Utils {
 	public static void makeAlphaInvisible(Actor widget) {
 		Color c = widget.getColor();
 		widget.setColor(c.r, c.g, c.b, 0f); // invisible alpha
+	}
+	
+	public static Button newTextButton(BlinkerGame app, String text) {
+		return new TextButton(text, new TextButtonStyle(
+				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
+				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),null,
+				app.assets.font));
 	}
 }

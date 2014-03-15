@@ -2,12 +2,12 @@ package com.doogetha.blinkergame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -18,6 +18,7 @@ import com.doogetha.blinkergame.BlinkerGame;
 
 public class EnterBetScreen extends AbstractScreen {
 
+	private Image background;
 	private TextButton goButton;
 	private TextField betField;
 	private Label betLabel;
@@ -25,6 +26,9 @@ public class EnterBetScreen extends AbstractScreen {
 	public EnterBetScreen(BlinkerGame game) {
 		super(game);
 
+		background = new Image(new TextureRegion(app.assets.textureRoad));
+		background.setSize(BlinkerGame.VIRTUAL_TILE_SIZE, BlinkerGame.VIRTUAL_TILE_SIZE);
+		
 		goButton = new TextButton("Go !", new TextButtonStyle(
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),
@@ -45,6 +49,7 @@ public class EnterBetScreen extends AbstractScreen {
 		
 		setFixedPositions();
 		
+		stage.addActor(background);
 		stage.addActor(betLabel);
 		stage.addActor(betField);
 		stage.addActor(goButton);
@@ -63,6 +68,7 @@ public class EnterBetScreen extends AbstractScreen {
 	}
 
 	protected void setFixedPositions() {
+		background.setPosition(-(background.getWidth() - camera.viewportWidth)/2, -(background.getHeight() - camera.viewportHeight)/2);
 		float buttonPosX = (camera.viewportWidth - goButton.getWidth())/2;
 		float buttonPosY = camera.viewportHeight/2 + 50;
 		goButton.setPosition(buttonPosX, camera.viewportHeight/2);
@@ -91,9 +97,9 @@ public class EnterBetScreen extends AbstractScreen {
 	
 	@Override
 	public void render(float delta) {
-	    Gdx.gl.glClearColor(0, 0.5f, 0f, 1);
-	    Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
+//	    Gdx.gl.glClearColor(0, 0.5f, 0f, 1);
+//	    Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+//
 	    stage.act();
 	    stage.draw();
 	}

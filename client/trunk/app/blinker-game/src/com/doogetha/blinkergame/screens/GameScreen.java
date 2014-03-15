@@ -6,13 +6,12 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.Utils;
 
@@ -76,7 +75,7 @@ public class GameScreen extends AbstractScreen {
 		
 		app.assets.buttonLeft.addListener(new DirectionButtonListener(app.assets.buttonLeft, app.assets.buttonRight));
 		app.assets.buttonRight.addListener(new DirectionButtonListener(app.assets.buttonRight, app.assets.buttonLeft));
-		app.assets.gameover.addListener(new InputListener() {
+		app.assets.restartButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				Utils.fadeVisibility(app.assets.road, 0f, 0.5f, false);
@@ -97,6 +96,7 @@ public class GameScreen extends AbstractScreen {
 		stage.addActor(app.assets.getready);
 		stage.addActor(app.assets.drive);
 		stage.addActor(app.assets.gameover);
+		stage.addActor(app.assets.restartButton);
 	}
 	
 	protected void setFixedScreenPositions() {
@@ -109,11 +109,12 @@ public class GameScreen extends AbstractScreen {
 		centerOnScreen(app.assets.getready);
 		centerOnScreen(app.assets.drive);
 		centerOnScreen(app.assets.gameover);
+		centerOnScreen(app.assets.restartButton);
 		centerOnScreen(app.assets.plusLabel);
 	}
 	
-	protected void centerOnScreen(Widget widget) {
-		widget.setPosition((camera.viewportWidth-widget.getWidth())/2, (camera.viewportHeight-widget.getHeight())/2);
+	protected void centerOnScreen(Actor actor) {
+		actor.setPosition((camera.viewportWidth-actor.getWidth())/2, (camera.viewportHeight-actor.getHeight())/2);
 	}
 	
 	protected void setStartPosition() {
@@ -243,7 +244,7 @@ public class GameScreen extends AbstractScreen {
 		stopCarTime = System.currentTimeMillis();
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
-		app.assets.gameover.setTouchable(Touchable.enabled);
+		app.assets.restartButton.addAction(Utils.newDelayAction(2f, Utils.newVisibleAction(true)));
 		if (score < app.getBet()) {
 			updateScore(0);
 			fadeBetLabel(false);
@@ -346,7 +347,7 @@ public class GameScreen extends AbstractScreen {
 		setDirectionButtonsVisible(false);
 		gameOver = false;
 		Utils.makeAlphaInvisible(app.assets.gameover);
-		app.assets.gameover.setTouchable(Touchable.disabled);
+		app.assets.restartButton.setVisible(false);
 		updateScore(0);
 		app.assets.betLabel.setText(app.getBet()>0 ? "+"+app.getBet() : "");
 		Utils.fadeVisibility(app.assets.betLabel, 0f, 0f, true);

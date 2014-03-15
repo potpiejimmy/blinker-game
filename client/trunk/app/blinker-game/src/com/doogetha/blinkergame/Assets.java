@@ -22,7 +22,7 @@ public class Assets {
 	public Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
 	public Texture textureGetReady, textureDrive, textureGameOver, texturePlusOne;
 	public Texture textureButtonUp, textureButtonDown;
-	public Button buttonLeft, buttonRight, startButton;
+	public Button buttonLeft, buttonRight, restartButton;
 	public Image road, car;
 	public Image startScreenBackground, startScreenCar;
 	public BitmapFont font, scoreFont;
@@ -80,15 +80,16 @@ public class Assets {
 		buttonLeft.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
 		buttonRight.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
-		startButton = new TextButton("Start Game", new TextButtonStyle(
+		restartButton = new TextButton("Restart", new TextButtonStyle(
 				new TextureRegionDrawable(new TextureRegion(textureButtonUp)),
 				new TextureRegionDrawable(new TextureRegion(textureButtonDown)),null,
 				font));
-		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
+		restartButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 		
 		scoreLabel = new Label(" ", new Label.LabelStyle(scoreFont, Color.YELLOW));
 		plusLabel = new Label("+1", new Label.LabelStyle(scoreFont, Color.YELLOW));
 		betLabel = new Label("+100", new Label.LabelStyle(scoreFont, Color.YELLOW));
+		betLabel.setFontScale(0.7f);
 		Utils.makeAlphaInvisible(plusLabel);
 	}
 	

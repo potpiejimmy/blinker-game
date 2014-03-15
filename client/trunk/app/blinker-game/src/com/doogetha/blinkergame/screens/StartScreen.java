@@ -5,21 +5,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.Utils;
 
 public class StartScreen extends AbstractScreen {
 
+	private Button startButton;
+	
 	public StartScreen(BlinkerGame game) {
 		super(game);
+
+		startButton = Utils.newTextButton(app, "Start Game");
+		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 
 		setFixedPositions();
 		
 		stage.addActor(app.assets.startScreenBackground);
 		stage.addActor(app.assets.startScreenCar);
-		stage.addActor(app.assets.startButton);
+		stage.addActor(startButton);
 		
-		app.assets.startButton.addListener(new InputListener() {
+		startButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				return true;
@@ -33,7 +39,7 @@ public class StartScreen extends AbstractScreen {
 	}
 	
 	protected void setFixedPositions() {
-		app.assets.startButton.setPosition((camera.viewportWidth - app.assets.startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE/5);
+		startButton.setPosition((camera.viewportWidth - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE/5);
 		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - camera.viewportWidth)/2, -(app.assets.startScreenBackground.getHeight() - camera.viewportHeight)/2);
 		app.assets.startScreenCar.setPosition((camera.viewportWidth-app.assets.startScreenCar.getWidth())/2, (camera.viewportHeight-app.assets.startScreenCar.getHeight())/2);
 	}
