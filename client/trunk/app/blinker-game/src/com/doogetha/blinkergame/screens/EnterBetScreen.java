@@ -38,11 +38,10 @@ public class EnterBetScreen extends AbstractScreen {
 		Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pm.setColor(Color.BLACK);
 		pm.fill();
-		betField = new TextField("100", 
+		betField = new TextField("", 
 				new TextFieldStyle(app.assets.scoreFont, Color.YELLOW, new TextureRegionDrawable(new TextureRegion(new Texture(pm), 6, 90)), null, null));
 		pm.dispose();
 		betField.setMaxLength(5);
-		betField.setCursorPosition(betField.getText().length());
 		betField.setSize(BlinkerGame.VIEWPORT_SIZE, 90);
 
 		betLabel = new Label("Enter your bet:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
