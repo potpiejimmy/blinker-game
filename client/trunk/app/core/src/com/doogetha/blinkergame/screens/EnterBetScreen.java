@@ -67,10 +67,10 @@ public class EnterBetScreen extends AbstractScreen {
 	}
 
 	protected void setFixedPositions() {
-		background.setPosition(-(background.getWidth() - camera.viewportWidth)/2, -(background.getHeight() - camera.viewportHeight)/2);
-		float buttonPosX = (camera.viewportWidth - goButton.getWidth())/2;
-		float buttonPosY = camera.viewportHeight/2 + 50;
-		goButton.setPosition(buttonPosX, camera.viewportHeight/2);
+		background.setPosition(-(background.getWidth() - stage.getViewport().getWorldWidth())/2, -(background.getHeight() - stage.getViewport().getWorldHeight())/2);
+		float buttonPosX = (stage.getViewport().getWorldWidth() - goButton.getWidth())/2;
+		float buttonPosY = stage.getViewport().getWorldHeight()/2 + 50;
+		goButton.setPosition(buttonPosX, stage.getViewport().getWorldHeight()/2);
 		betField.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() - 20);
 		betLabel.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + betField.getHeight() - 20);
 	}

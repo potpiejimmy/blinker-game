@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -58,7 +58,7 @@ public class GameScreen extends AbstractScreen {
 			if (!me.isDisabled()) {
 				me.setDisabled(true);
 				me.setChecked(true);
-				me.setPosition((camera.viewportWidth - BlinkerGame.BUTTON_SIZE)/2, 0);
+				me.setPosition((stage.getViewport().getWorldWidth() - BlinkerGame.BUTTON_SIZE)/2, 0);
 				other.setVisible(false);
 			}
 			return true;
@@ -100,12 +100,12 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	protected void setFixedScreenPositions() {
-		roadCenterX = -(app.assets.road.getWidth() - camera.viewportWidth)/2;
-		roadCenterY = -(app.assets.road.getHeight() - camera.viewportHeight)/2;
+		roadCenterX = -(app.assets.road.getWidth() - stage.getViewport().getWorldWidth())/2;
+		roadCenterY = -(app.assets.road.getHeight() - stage.getViewport().getWorldHeight())/2;
 		app.assets.road.setPosition(roadCenterX + x, roadCenterY + y);
-		app.assets.car.setPosition((camera.viewportWidth-app.assets.car.getWidth())/2, (camera.viewportHeight-app.assets.car.getHeight())/2);
-		app.assets.scoreLabel.setPosition(50, camera.viewportHeight - 150);
-		app.assets.betLabel.setPosition(50, camera.viewportHeight - 250);
+		app.assets.car.setPosition((stage.getViewport().getWorldWidth()-app.assets.car.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.car.getHeight())/2);
+		app.assets.scoreLabel.setPosition(50, stage.getViewport().getWorldHeight() - 150);
+		app.assets.betLabel.setPosition(50, stage.getViewport().getWorldHeight() - 250);
 		centerOnScreen(app.assets.getready);
 		centerOnScreen(app.assets.drive);
 		centerOnScreen(app.assets.gameover);
@@ -114,7 +114,7 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	protected void centerOnScreen(Actor actor) {
-		actor.setPosition((camera.viewportWidth-actor.getWidth())/2, (camera.viewportHeight-actor.getHeight())/2);
+		actor.setPosition((stage.getViewport().getWorldWidth()-actor.getWidth())/2, (stage.getViewport().getWorldHeight()-actor.getHeight())/2);
 	}
 	
 	protected void setStartPosition() {
@@ -126,7 +126,7 @@ public class GameScreen extends AbstractScreen {
 	
 	protected void resetDirectionButtons() {
 		app.assets.buttonLeft.setPosition(0, 0);
-		app.assets.buttonRight.setPosition(camera.viewportWidth - BlinkerGame.BUTTON_SIZE, 0);
+		app.assets.buttonRight.setPosition(stage.getViewport().getWorldWidth() - BlinkerGame.BUTTON_SIZE, 0);
 		setDirectionButtonsVisible(true);
 		app.assets.buttonLeft.setChecked(false);
 		app.assets.buttonRight.setChecked(false);
@@ -234,7 +234,7 @@ public class GameScreen extends AbstractScreen {
 		updateScore(score + historyIndex+1);
 		app.assets.plusLabel.setText("+"+(historyIndex+1));
 		app.assets.plusLabel.needsLayout();
-		app.assets.plusLabel.setPosition((camera.viewportWidth-app.assets.plusLabel.getPrefWidth())/2, (camera.viewportHeight-app.assets.plusLabel.getPrefHeight())/2);
+		app.assets.plusLabel.setPosition((stage.getViewport().getWorldWidth()-app.assets.plusLabel.getPrefWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.plusLabel.getPrefHeight())/2);
 		app.assets.plusLabel.addAction(Utils.newMoveByAction(0.6f, 0f, 200));
 		app.assets.plusLabel.addAction(new SequenceAction(Utils.newFadeAction(0.1f, 1f), Utils.newDelayAction(0.25f, Utils.newFadeAction(0.25f, 0f))));
 	}
@@ -281,7 +281,7 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) {
 	    Gdx.gl.glClearColor(0, 0, 0f, 1);
-	    Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 	    if (firstRender == 0) {
 			firstRender = System.currentTimeMillis();
@@ -305,7 +305,6 @@ public class GameScreen extends AbstractScreen {
 		}
 		lastRender = now;
 
-		stage.getSpriteBatch().setProjectionMatrix(camera.combined);
 		stage.act();
 		stage.draw(); // stage has its own sprite batch
 	}
