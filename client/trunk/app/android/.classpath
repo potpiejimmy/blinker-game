@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="src" path="/blinker-game-core"/>
 	<classpathentry exported="true" kind="lib" path="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.0-SNAPSHOT/4ae54963d6a233405ceb63ba53a690980b4b83ce/gdx-backend-android-1.0-SNAPSHOT.jar" sourcepath="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.0-SNAPSHOT/ee19199a1331820083aac4a47d71bfcedaa8253e/gdx-backend-android-1.0-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.0-SNAPSHOT/f7889118fc19cfaffe8592cc5d1ba385a93d0bf1/gdx-1.0-SNAPSHOT.jar" sourcepath="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.0-SNAPSHOT/46ca136c331a820ddcf5ec467dd3e1da4fb072ca/gdx-1.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
