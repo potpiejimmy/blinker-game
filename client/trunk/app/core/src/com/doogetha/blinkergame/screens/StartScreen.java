@@ -11,21 +11,37 @@ import com.doogetha.blinkergame.Utils;
 
 public class StartScreen extends AbstractScreen {
 
-	private Button startButton;
+	private Button startButton, startWithBetButton;
 	
 	public StartScreen(BlinkerGame game) {
 		super(game);
 
-		startButton = Utils.newTextButton(app, "Start Game");
+		startButton = Utils.newTextButton(app, "Start");
+		startWithBetButton = Utils.newTextButton(app, "Start (with bet)");
+
 		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
+		startWithBetButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 
 		setFixedPositions();
 		
 		stage.addActor(app.assets.startScreenBackground);
 		stage.addActor(app.assets.startScreenCar);
 		stage.addActor(startButton);
+		stage.addActor(startWithBetButton);
 		
 		startButton.addListener(new InputListener() {
+			@Override
+		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			
+			@Override
+		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				app.startGame(0);;
+		    }
+		});
+
+		startWithBetButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				return true;
@@ -39,7 +55,8 @@ public class StartScreen extends AbstractScreen {
 	}
 	
 	protected void setFixedPositions() {
-		startButton.setPosition((stage.getViewport().getWorldWidth() - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE/5);
+		startButton.setPosition((stage.getViewport().getWorldWidth() - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE);
+		startWithBetButton.setPosition((stage.getViewport().getWorldWidth() - startWithBetButton.getWidth())/2, BlinkerGame.BUTTON_SIZE/5);
 		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - stage.getViewport().getWorldWidth())/2, -(app.assets.startScreenBackground.getHeight() - stage.getViewport().getWorldHeight())/2);
 		app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/2);
 	}

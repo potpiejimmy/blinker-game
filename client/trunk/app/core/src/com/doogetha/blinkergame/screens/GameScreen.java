@@ -244,7 +244,7 @@ public class GameScreen extends AbstractScreen {
 		stopCarTime = System.currentTimeMillis();
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
-		app.assets.restartButton.addAction(Utils.newDelayAction(2f, Utils.newVisibleAction(true)));
+		app.assets.restartButton.addAction(Utils.newDelayAction(3f, Utils.newVisibleAction(true)));
 		if (score < app.getBet()) {
 			updateScore(0);
 			fadeBetLabel(false);

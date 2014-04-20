@@ -60,8 +60,9 @@ public class EnterBetScreen extends AbstractScreen {
 			}
 			@Override
 		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				try {app.setBet(Integer.parseInt(betField.getText()));} catch (NumberFormatException nfe) {}
-				app.setScreen(app.gameScreen);
+				int bet = 0;
+				try {bet = Integer.parseInt(betField.getText());} catch (NumberFormatException nfe) {}
+				app.startGame(bet);
 		    }
 		});
 	}

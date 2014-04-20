@@ -43,4 +43,9 @@ public class BlinkerGame extends Game {
 	public void setBet(int bet) {
 		this.bet = bet;
 	}
+	
+	public void startGame(int bet) {
+		setBet(bet);
+		setScreen(gameScreen);
+	}
 }
