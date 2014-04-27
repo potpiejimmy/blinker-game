@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
@@ -57,10 +59,15 @@ public class Utils {
 		widget.setColor(c.r, c.g, c.b, 0f); // invisible alpha
 	}
 	
-	public static Button newTextButton(BlinkerGame app, String text) {
-		return new TextButton(text, new TextButtonStyle(
+	public static Button newTextButton(BlinkerGame app, String text, final Runnable action) {
+		TextButton b = new TextButton(text, new TextButtonStyle(
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),null,
 				app.assets.font));
+		b.addListener(new InputListener() {
+			@Override public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) { return true; }
+			@Override public void touchUp (InputEvent event, float x, float y, int pointer, int button) { action.run(); }
+		});
+		return b;
 	}
 }

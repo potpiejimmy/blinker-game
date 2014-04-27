@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -18,17 +19,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Assets {
 	
-	public Texture textureRoad, textureCar;
+	public Texture textureRoad, textureCar, textureCarLeft, textureCarRight;
 	public Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
 	public Texture textureGetReady, textureDrive, textureGameOver, texturePlusOne;
 	public Texture textureButtonUp, textureButtonDown;
 	public Button buttonLeft, buttonRight, restartButton;
-	public Image road, car;
+	public Image road;
+	public AnimatedImage car;
 	public Image startScreenBackground, startScreenCar;
 	public BitmapFont font, scoreFont;
 	public Image getready, drive, gameover;
 	public Label scoreLabel, plusLabel, betLabel;
 	public Sound soundCoin;
+	public Animation carBlinkLeftAnim, carBlinkRightAnim;
 	
 	public Assets() {
 		textureRoad = new Texture(Gdx.files.internal("data/road.png"));
@@ -37,6 +40,10 @@ public class Assets {
 
 		textureCar = new Texture(Gdx.files.internal("data/car.png"));
 		textureCar.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		textureCarLeft = new Texture(Gdx.files.internal("data/carleft.png"));
+		textureCarLeft.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		textureCarRight = new Texture(Gdx.files.internal("data/carright.png"));
+		textureCarRight.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		textureGetReady = new Texture(Gdx.files.internal("data/getready.png"));
 		textureGetReady.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		textureDrive = new Texture(Gdx.files.internal("data/driveroute.png"));
@@ -48,10 +55,13 @@ public class Assets {
 		
 		road = new Image(new TextureRegion(textureRoad, 0, 0, textureRoad.getWidth() * 3, textureRoad.getHeight() * 3));
 		road.setSize(3f * BlinkerGame.VIRTUAL_TILE_SIZE, 3f * BlinkerGame.VIRTUAL_TILE_SIZE);
-
-		car = new Image(new TextureRegion(textureCar));
+		
+		car = new AnimatedImage(null, new TextureRegion(textureCar));
 		car.setSize(0.4f * BlinkerGame.VIEWPORT_SIZE, 0.4f * BlinkerGame.VIEWPORT_SIZE);
 		car.setOrigin(car.getWidth()/2, car.getHeight()/2);
+		
+		carBlinkLeftAnim = new Animation(0.2f, new TextureRegion(textureCarLeft), new TextureRegion(textureCar));
+		carBlinkRightAnim = new Animation(0.2f, new TextureRegion(textureCarRight), new TextureRegion(textureCar));
 		
 		startScreenBackground = new Image(new TextureRegion(textureRoad));
 		startScreenBackground.setSize(BlinkerGame.VIRTUAL_TILE_SIZE, BlinkerGame.VIRTUAL_TILE_SIZE);

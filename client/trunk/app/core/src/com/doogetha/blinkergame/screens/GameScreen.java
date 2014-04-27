@@ -31,6 +31,7 @@ public class GameScreen extends AbstractScreen {
 	
 	private int direction = 0;
 	private int nextDirection = -1;
+	private int nextTurn = -1;
 	
 	private int score = 0;
 	
@@ -60,6 +61,7 @@ public class GameScreen extends AbstractScreen {
 				me.setChecked(true);
 				me.setPosition((stage.getViewport().getWorldWidth() - BlinkerGame.BUTTON_SIZE)/2, 0);
 				other.setVisible(false);
+				setSignalAnimation(nextUserTurn());
 			}
 			return true;
 	    }
@@ -137,6 +139,32 @@ public class GameScreen extends AbstractScreen {
 		app.assets.buttonRight.setVisible(visible);
 	}
 	
+	protected int nextUserTurn() {
+		return app.assets.buttonLeft.isChecked() ? 0 : app.assets.buttonRight.isChecked() ? 2 : 1;
+	}
+	
+	protected int nextComputerTurn() {
+		int turn;
+		if (historyIndex < directionHistory.size())
+			turn = directionHistory.get(historyIndex++);
+		else {
+		    do { turn = random.nextInt(3); } // 0=left, 1=ahead, 2=right
+		    while ( turn == directionHistory.get(historyIndex-1) &&
+		    		turn == directionHistory.get(historyIndex-2));
+			directionHistory.add(turn);
+			historyIndex += 2; // end of round signal
+		}
+	    return turn;
+	}
+	
+	protected void setSignalAnimation(int turn) {
+		switch (turn) {
+		case 0: app.assets.car.setAnimation(app.assets.carBlinkLeftAnim); break;
+		case 1: app.assets.car.setAnimation(null); break;
+		case 2: app.assets.car.setAnimation(app.assets.carBlinkRightAnim); break;
+		}
+	}
+	
 	protected void moveScreen(float offset) {
 		switch (direction) {
 		case 0: // up
@@ -157,21 +185,22 @@ public class GameScreen extends AbstractScreen {
 		app.assets.road.setY(roadCenterY + y);
 
 		float combinedOffset = Math.abs(x+y);
+		
+		if (combinedOffset >= 0.4f * BlinkerGame.VIRTUAL_TILE_SIZE && nextTurn == -1 && gameState.equals(GameState.memorize) && stopCarTime == 0) {
+			// choose next computer turn (needed for blinker):
+			nextTurn = nextComputerTurn();
+			setSignalAnimation(nextTurn);
+		}
+		
 		if (combinedOffset >= 0.9f * BlinkerGame.VIRTUAL_TILE_SIZE && nextDirection == -1) {
 			// choose next direction
 			int turn;
 			if (gameState.equals(GameState.memorize)) {
-				if (historyIndex < directionHistory.size())
-					turn = directionHistory.get(historyIndex++);
-				else {
-				    do { turn = random.nextInt(3); } // 0=left, 1=ahead, 2=right
-				    while ( turn == directionHistory.get(historyIndex-1) &&
-				    		turn == directionHistory.get(historyIndex-2));
-					directionHistory.add(turn);
+				turn = nextTurn;
+				if (historyIndex > directionHistory.size())
 					endOfRound();
-				}
 			} else {
-				turn = app.assets.buttonLeft.isChecked() ? 0 : app.assets.buttonRight.isChecked() ? 2 : 1;
+				turn = nextUserTurn();
 				if (turn != directionHistory.get(historyIndex)) {
 					gameOver();
 				} else {
@@ -181,6 +210,7 @@ public class GameScreen extends AbstractScreen {
 					if (historyIndex == directionHistory.size()) {
 						// end reached
 						endOfRound();
+						resetDirectionButtons();
 						setDirectionButtonsVisible(false);
 					} else {
 						resetDirectionButtons();
@@ -197,6 +227,8 @@ public class GameScreen extends AbstractScreen {
 			}
 			direction = nextDirection;
 			nextDirection = -1;
+			nextTurn = -1;
+			setSignalAnimation(1);
 		}
 		
 		app.assets.car.setRotation(-direction * 90);

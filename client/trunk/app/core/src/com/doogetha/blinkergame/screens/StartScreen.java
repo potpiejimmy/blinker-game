@@ -3,8 +3,6 @@ package com.doogetha.blinkergame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.Utils;
@@ -16,8 +14,12 @@ public class StartScreen extends AbstractScreen {
 	public StartScreen(BlinkerGame game) {
 		super(game);
 
-		startButton = Utils.newTextButton(app, "Start");
-		startWithBetButton = Utils.newTextButton(app, "Start (with bet)");
+		startButton = Utils.newTextButton(app, "Start Game", new Runnable() {
+			@Override public void run() { app.startGame(0); }
+		});
+		startWithBetButton = Utils.newTextButton(app, "Start Game (Bet)", new Runnable() {
+			@Override public void run() { app.setScreen(app.enterBetScreen); }
+		});
 
 		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 		startWithBetButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
@@ -28,30 +30,6 @@ public class StartScreen extends AbstractScreen {
 		stage.addActor(app.assets.startScreenCar);
 		stage.addActor(startButton);
 		stage.addActor(startWithBetButton);
-		
-		startButton.addListener(new InputListener() {
-			@Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-			
-			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				app.startGame(0);;
-		    }
-		});
-
-		startWithBetButton.addListener(new InputListener() {
-			@Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-			
-			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				app.setScreen(app.enterBetScreen);
-		    }
-		});
 	}
 	
 	protected void setFixedPositions() {
