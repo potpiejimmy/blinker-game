@@ -26,6 +26,10 @@ public class AnimatedImage extends Image {
 		this.animation = animation;
 	}
 	
+	public void reset() {
+		stateTime = 0;
+	}
+	
 	@Override
 	public void act(float delta)
 	{

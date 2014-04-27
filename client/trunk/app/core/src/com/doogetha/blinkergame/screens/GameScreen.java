@@ -158,10 +158,11 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	protected void setSignalAnimation(int turn) {
+		app.assets.car.reset();
 		switch (turn) {
-		case 0: app.assets.car.setAnimation(app.assets.carBlinkLeftAnim); break;
-		case 1: app.assets.car.setAnimation(null); break;
-		case 2: app.assets.car.setAnimation(app.assets.carBlinkRightAnim); break;
+			case 0: app.assets.car.setAnimation(app.assets.carBlinkLeftAnim); break;
+			case 1: app.assets.car.setAnimation(null); break;
+			case 2: app.assets.car.setAnimation(app.assets.carBlinkRightAnim); break;
 		}
 	}
 	
