@@ -30,7 +30,7 @@ public class Assets {
 	public BitmapFont font, scoreFont;
 	public Image getready, drive, gameover;
 	public Label scoreLabel, plusLabel, betLabel;
-	public Sound soundCoin;
+	public Sound soundCoin, soundTurnSignal;
 	public Animation carBlinkLeftAnim, carBlinkRightAnim;
 	
 	public Assets() {
@@ -78,6 +78,7 @@ public class Assets {
 		scoreFont = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
 		
 		soundCoin = Gdx.audio.newSound(Gdx.files.internal("data/coin.wav"));
+		soundTurnSignal = Gdx.audio.newSound(Gdx.files.internal("data/turnsignal.ogg"));
 		
 		buttonLeftOff = new Texture(Gdx.files.internal("data/buttonleft_off.png"));
 		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));
@@ -106,6 +107,8 @@ public class Assets {
 	public void dispose() {
 		textureRoad.dispose();
 		textureCar.dispose();
+		textureCarLeft.dispose();
+		textureCarRight.dispose();
 		textureGetReady.dispose();
 		textureDrive.dispose();
 		textureGameOver.dispose();
@@ -119,6 +122,7 @@ public class Assets {
 		font.dispose();
 		scoreFont.dispose();
 		soundCoin.dispose();
+		soundTurnSignal.dispose();
 	}
 	
 	protected Image newScreenImageActor(Texture texture, float size) {

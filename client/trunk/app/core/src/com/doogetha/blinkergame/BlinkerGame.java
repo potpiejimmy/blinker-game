@@ -34,6 +34,10 @@ public class BlinkerGame extends Game {
 		super.dispose();
 		
 		assets.dispose();
+		
+		startScreen.dispose();
+		enterBetScreen.dispose();
+		gameScreen.dispose();
 	}
 
 	public int getBet() {

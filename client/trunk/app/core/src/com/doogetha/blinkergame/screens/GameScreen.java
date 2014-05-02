@@ -61,7 +61,7 @@ public class GameScreen extends AbstractScreen {
 				me.setChecked(true);
 				me.setPosition((stage.getViewport().getWorldWidth() - BlinkerGame.BUTTON_SIZE)/2, 0);
 				other.setVisible(false);
-				setSignalAnimation(nextUserTurn());
+				setTurnSignal(nextUserTurn());
 			}
 			return true;
 	    }
@@ -80,10 +80,13 @@ public class GameScreen extends AbstractScreen {
 		app.assets.restartButton.addListener(new InputListener() {
 			@Override
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			@Override
+		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				Utils.fadeVisibility(app.assets.road, 0f, 0.5f, false);
 				Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, false);
-				return false;
-			}
+		    }
 		});
 		
 		setFixedScreenPositions();
@@ -157,12 +160,21 @@ public class GameScreen extends AbstractScreen {
 	    return turn;
 	}
 	
-	protected void setSignalAnimation(int turn) {
+	protected void setTurnSignal(int turn) {
 		app.assets.car.reset();
 		switch (turn) {
-			case 0: app.assets.car.setAnimation(app.assets.carBlinkLeftAnim); break;
-			case 1: app.assets.car.setAnimation(null); break;
-			case 2: app.assets.car.setAnimation(app.assets.carBlinkRightAnim); break;
+			case 0: 
+				app.assets.car.setAnimation(app.assets.carBlinkLeftAnim);
+				app.assets.soundTurnSignal.loop();
+				break;
+			case 1: 
+				app.assets.car.setAnimation(null);
+				app.assets.soundTurnSignal.stop();
+				break;
+			case 2:
+				app.assets.car.setAnimation(app.assets.carBlinkRightAnim);
+				app.assets.soundTurnSignal.loop();
+				break;
 		}
 	}
 	
@@ -187,10 +199,10 @@ public class GameScreen extends AbstractScreen {
 
 		float combinedOffset = Math.abs(x+y);
 		
-		if (combinedOffset >= 0.4f * BlinkerGame.VIRTUAL_TILE_SIZE && nextTurn == -1 && gameState.equals(GameState.memorize) && stopCarTime == 0) {
+		if (combinedOffset >= 0.25f * BlinkerGame.VIRTUAL_TILE_SIZE && nextTurn == -1 && gameState.equals(GameState.memorize) && stopCarTime == 0) {
 			// choose next computer turn (needed for blinker):
 			nextTurn = nextComputerTurn();
-			setSignalAnimation(nextTurn);
+			setTurnSignal(nextTurn);
 		}
 		
 		if (combinedOffset >= 0.9f * BlinkerGame.VIRTUAL_TILE_SIZE && nextDirection == -1) {
@@ -229,7 +241,7 @@ public class GameScreen extends AbstractScreen {
 			direction = nextDirection;
 			nextDirection = -1;
 			nextTurn = -1;
-			setSignalAnimation(1);
+			setTurnSignal(1);
 		}
 		
 		app.assets.car.setRotation(-direction * 90);
@@ -263,7 +275,7 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	protected void goodTurn() {
-		app.assets.soundCoin.play();
+		app.assets.soundCoin.play(0.25f);
 		updateScore(score + historyIndex+1);
 		app.assets.plusLabel.setText("+"+(historyIndex+1));
 		app.assets.plusLabel.needsLayout();
@@ -355,7 +367,6 @@ public class GameScreen extends AbstractScreen {
 		image.addAction(new SequenceAction(
 				Utils.newFadeAction(0.25f, 1f),
 				Utils.newDelayAction(2f, Utils.newFadeAction(0.25f, 0f))));
-		setDirectionButtonsVisible(gameState.equals(GameState.drive));
 	}
 	
 	@Override
