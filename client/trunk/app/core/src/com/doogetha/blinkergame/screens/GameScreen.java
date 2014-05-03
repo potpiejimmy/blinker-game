@@ -84,8 +84,11 @@ public class GameScreen extends AbstractScreen {
 			}
 			@Override
 		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				Utils.fadeVisibility(app.assets.road, 0f, 0.5f, false);
-				Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, false);
+				if (!app.assets.restartButton.isDisabled()) {
+					Utils.fadeVisibility(app.assets.road, 0f, 0.5f, false);
+					Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, false);
+					app.assets.restartButton.setDisabled(true);
+				}
 		    }
 		});
 		
@@ -289,7 +292,8 @@ public class GameScreen extends AbstractScreen {
 		stopCarTime = System.currentTimeMillis();
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
-		app.assets.restartButton.addAction(Utils.newDelayAction(3f, Utils.newVisibleAction(true)));
+		app.assets.restartButton.setDisabled(false);
+		app.assets.restartButton.addAction(Utils.newDelayAction(2f, Utils.newVisibleAction(true)));
 		if (score < app.getBet()) {
 			updateScore(0);
 			fadeBetLabel(false);
