@@ -109,8 +109,8 @@ public class GameScreen extends AbstractScreen {
 		roadCenterY = -(app.assets.road.getHeight() - stage.getViewport().getWorldHeight())/2;
 		app.assets.road.setPosition(roadCenterX + x, roadCenterY + y);
 		app.assets.car.setPosition((stage.getViewport().getWorldWidth()-app.assets.car.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.car.getHeight())/2);
-		app.assets.scoreLabel.setPosition(50, stage.getViewport().getWorldHeight() - 150);
-		app.assets.betLabel.setPosition(50, stage.getViewport().getWorldHeight() - 250);
+		app.assets.scoreLabel.setPosition(50, stage.getViewport().getWorldHeight() - 200);
+		app.assets.betLabel.setPosition(50, stage.getViewport().getWorldHeight() - 300);
 		centerOnScreen(app.assets.getready);
 		centerOnScreen(app.assets.drive);
 		centerOnScreen(app.assets.gameover);
@@ -275,7 +275,7 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	protected void goodTurn() {
-		app.assets.soundCoin.play(0.25f);
+		app.assets.soundCoin.play(0.1f);
 		updateScore(score + historyIndex+1);
 		app.assets.plusLabel.setText("+"+(historyIndex+1));
 		app.assets.plusLabel.needsLayout();

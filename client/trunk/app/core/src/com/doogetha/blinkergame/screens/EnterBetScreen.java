@@ -44,7 +44,7 @@ public class EnterBetScreen extends AbstractScreen {
 		betField.setMaxLength(5);
 		betField.setSize(BlinkerGame.VIEWPORT_SIZE, 90);
 
-		betLabel = new Label("Enter your bet:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
+		betLabel = new Label("Enter bet:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
 		
 		setFixedPositions();
 		

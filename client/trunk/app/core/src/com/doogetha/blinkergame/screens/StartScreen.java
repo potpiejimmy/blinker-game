@@ -17,7 +17,7 @@ public class StartScreen extends AbstractScreen {
 		startButton = Utils.newTextButton(app, "Start Game", new Runnable() {
 			@Override public void run() { app.startGame(0); }
 		});
-		startWithBetButton = Utils.newTextButton(app, "Start Game (Bet)", new Runnable() {
+		startWithBetButton = Utils.newTextButton(app, "Start Game (+Bet)", new Runnable() {
 			@Override public void run() { app.setScreen(app.enterBetScreen); }
 		});
 
