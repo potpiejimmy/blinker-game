@@ -112,8 +112,8 @@ public class GameScreen extends AbstractScreen {
 		roadCenterY = -(app.assets.road.getHeight() - stage.getViewport().getWorldHeight())/2;
 		app.assets.road.setPosition(roadCenterX + x, roadCenterY + y);
 		app.assets.car.setPosition((stage.getViewport().getWorldWidth()-app.assets.car.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.car.getHeight())/2);
-		app.assets.scoreLabel.setPosition(50, stage.getViewport().getWorldHeight() - 200);
-		app.assets.betLabel.setPosition(50, stage.getViewport().getWorldHeight() - 300);
+		app.assets.scoreLabel.setPosition(50, stage.getViewport().getWorldHeight() - 150);
+		app.assets.betLabel.setPosition(50, stage.getViewport().getWorldHeight() - 250);
 		centerOnScreen(app.assets.getready);
 		centerOnScreen(app.assets.drive);
 		centerOnScreen(app.assets.gameover);

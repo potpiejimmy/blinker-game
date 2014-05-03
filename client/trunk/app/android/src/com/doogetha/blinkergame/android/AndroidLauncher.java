@@ -1,9 +1,12 @@
 package com.doogetha.blinkergame.android;
 
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -14,40 +17,65 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 public class AndroidLauncher extends AndroidApplication {
+
+	private LinearLayout layout = null;
+	private View gameView;
+	private AdView adView = null;
+	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		View gameView = initializeForView(new BlinkerGame(), config);
+		gameView = initializeForView(new BlinkerGame(), config);
 
-        initView(createLayout(gameView));
+        initView(createLayout());
 	}
 	
-	protected View createLayout(View gameView) {
-        // Create the layout
-        RelativeLayout layout = new RelativeLayout(this);
+	protected void createAdView() {
+        // (Re-)create and setup the AdMob view
+		if (adView != null) adView.destroy();
 		
-        // Create and setup the AdMob view
-        AdView adView = new AdView(this);
+        adView = new AdView(this);
         adView.setAdUnitId("ca-app-pub-9069641916384503/7433452077");
-        adView.setAdSize(AdSize.BANNER);
-        adView.loadAd(new AdRequest.Builder()
-        .build());
+        adView.setAdSize(AdSize.SMART_BANNER);
+        adView.loadAd(new AdRequest.Builder().build());
+	}
+	
+	protected View createLayout() {
+        // Create the layout
+		layout = new LinearLayout(this);
+		layout.setOrientation(LinearLayout.VERTICAL);
+		layout.setBackgroundColor(Color.BLACK);
+
+		// Add the AdMob view
+		addAdView();
         
         // Add the libgdx view
         layout.addView(gameView);
 
-        // Add the AdMob view
+        return layout;
+	}
+
+	protected void addAdView() {
+		createAdView(); // must be recreated each time
         RelativeLayout.LayoutParams adParams = 
             new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
         adParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         adParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-        layout.addView(adView, adParams);
-        
-        return layout;
+        layout.addView(adView, 0, adParams);
+	}
+	
+	protected void readdAdView() {
+		layout.removeViewAt(0);
+		addAdView();
+	}
+	
+	@Override
+	public void onConfigurationChanged (Configuration config) {
+		super.onConfigurationChanged(config);
+		readdAdView();
 	}
 	
 	protected void initView(View content) {
