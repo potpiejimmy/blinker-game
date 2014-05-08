@@ -32,6 +32,7 @@
   <libs>
     <lib>build/libs/ios/libgdx.a</lib>
     <lib>build/libs/ios/libObjectAL.a</lib>
+    <lib>libs/ios/libadmob.a</lib>
   </libs>
   <frameworks>
     <framework>UIKit</framework>
@@ -41,5 +42,12 @@
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
+    <framework>CoreTelephony</framework>
+    <framework>MessageUI</framework>
+    <framework>SystemConfiguration</framework>
   </frameworks>
+  <weakFrameworks>
+    <framework>AdSupport</framework>
+    <framework>StoreKit</framework>
+  </weakFrameworks>
 </config>
