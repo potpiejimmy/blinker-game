@@ -41,7 +41,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
 	
 	protected void setupAdvertisements(UIApplication application) {
 	    UIViewController rootViewController = application.getKeyWindow().getRootViewController();
-	    UIViewController adsViewController = new AdsViewController();
+	    UIViewController adsViewController = new UIViewController();
 	    
 	    rootViewController.addChildViewController(adsViewController);
 
@@ -50,35 +50,29 @@ public class IOSLauncher extends IOSApplication.Delegate {
 	    bannerView.setRootViewController(adsViewController);
 //	    bannerView.setBackgroundColor(new UIColor(0,0,0,1));
 	    
-//	    UIView libgdxView = app.getUIViewController().getView();
-//	    UIView rootView = libgdxView.getSuperview();
-//	    
-//	    libgdxView.setFrame(new CGRect(0, bannerView.getBounds().getHeight()+ 1, UIScreen.getMainScreen().getBounds().size().width(), UIScreen.getMainScreen().getBounds().size().height() - 1 - bannerView.getBounds().getHeight()));
-	    
 	    rootViewController.getView().addSubview(bannerView);
-	    
-//	    application.getKeyWindow().setRootViewController(rootViewController);
-//	    application.getKeyWindow().addSubview(rootViewController.getView());
-//	    application.getKeyWindow().makeKeyAndVisible();	   
 	}
 	
 	protected void updateBannerPosition(UIInterfaceOrientation orientation) {
 		boolean landscape = UIInterfaceOrientation.LandscapeLeft.equals(orientation) || UIInterfaceOrientation.LandscapeRight.equals(orientation);
 
 		bannerView.setAdSize(landscape ? GADAdSizeManager.smartBannerLandscape() : GADAdSizeManager.smartBannerPortrait());
-        CGSize AD_SIZE = new CGSize(bannerView.getFrame().getWidth(), bannerView.getFrame().getHeight());
+        CGSize AD_SIZE = bannerView.getFrame().size();
         CGSize DEVICE_SCREEN_SIZE = UIScreen.getMainScreen().getBounds().size();
         CGSize SCREEN_SIZE = landscape ? new CGSize(DEVICE_SCREEN_SIZE.height(), DEVICE_SCREEN_SIZE.width()) :
                                          new CGSize(DEVICE_SCREEN_SIZE.width(), DEVICE_SCREEN_SIZE.height());
         bannerView.setCenter(new CGPoint(SCREEN_SIZE.width()/2,SCREEN_SIZE.height()-AD_SIZE.height()/2));
-		System.out.println("updated banner");
 
 		bannerView.loadRequest(GADRequest.request());
 	}
 
+    @Override
+    public void willChangeStatusBarOrientation(UIApplication application, UIInterfaceOrientation newStatusBarOrientation, double duration) {
+    	updateBannerPosition(newStatusBarOrientation);
+    }
+
 	@Override
 	public void didBecomeActive (UIApplication application) {
-
 		super.didBecomeActive(application);
 	}
 
@@ -86,14 +80,5 @@ public class IOSLauncher extends IOSApplication.Delegate {
         NSAutoreleasePool pool = new NSAutoreleasePool();
         UIApplication.main(argv, null, IOSLauncher.class);
         pool.close();
-    }
-    
-    public class AdsViewController extends UIViewController
-    {
-    	@Override
-    	public void willRotate(UIInterfaceOrientation toInterfaceOrientation, double duration) {   
-    		System.out.println("screen orientation changed");
-    		updateBannerPosition(toInterfaceOrientation);
-    	}
     }
 }
