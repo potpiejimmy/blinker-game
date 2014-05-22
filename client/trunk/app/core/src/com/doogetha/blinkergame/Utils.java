@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -52,6 +53,12 @@ public class Utils {
 		VisibleAction va = new VisibleAction();
 		va.setVisible(visible);
 		return va;
+	}
+	
+	public static RunnableAction newRunnableAction(Runnable runnable) {
+		RunnableAction ra = new RunnableAction();
+		ra.setRunnable(runnable);
+		return ra;
 	}
 	
 	public static void makeAlphaInvisible(Actor widget) {

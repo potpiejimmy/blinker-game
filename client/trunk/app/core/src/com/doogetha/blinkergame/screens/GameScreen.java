@@ -293,7 +293,14 @@ public class GameScreen extends AbstractScreen {
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
 		app.assets.restartButton.setDisabled(false);
-		app.assets.restartButton.addAction(Utils.newDelayAction(2f, Utils.newVisibleAction(true)));
+		app.assets.restartButton.addAction(Utils.newDelayAction(2f,
+			new SequenceAction(Utils.newVisibleAction(true), 
+				Utils.newRunnableAction(new Runnable() {
+					@Override
+					public void run() {
+						app.setBannerAdVisible(true);
+					}
+				}))));
 		if (score < app.getBet()) {
 			updateScore(0);
 			fadeBetLabel(false);
@@ -309,6 +316,8 @@ public class GameScreen extends AbstractScreen {
 		resetDirectionButtons();
 		setDirectionButtonsVisible(newState.equals(GameState.drive));
 		Utils.fadeVisibility(app.assets.road, 0f, 0.5f, true);
+		
+		app.setBannerAdVisible(GameState.memorize.equals(newState));
 	}
 	
 	protected void checkEnterNewState() {
@@ -322,6 +331,7 @@ public class GameScreen extends AbstractScreen {
 					enterNewState(GameState.memorize);
 				} else {
 					app.setScreen(app.startScreen);
+					app.setBannerAdVisible(false);
 				}
 				break;
 		}

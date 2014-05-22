@@ -6,19 +6,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.doogetha.blinkergame.BlinkerGame;
+import com.doogetha.blinkergame.NativeApplication;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
-public class AndroidLauncher extends AndroidApplication {
+public class AndroidLauncher extends AndroidApplication implements NativeApplication {
 
-	private LinearLayout layout = null;
+	private RelativeLayout layout = null;
 	private View gameView;
 	private AdView adView = null;
 	
@@ -27,7 +27,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		gameView = initializeForView(new BlinkerGame(), config);
+		gameView = initializeForView(new BlinkerGame(this), config);
 
         initView(createLayout());
 	}
@@ -39,37 +39,43 @@ public class AndroidLauncher extends AndroidApplication {
         adView = new AdView(this);
         adView.setAdUnitId("ca-app-pub-9069641916384503/7433452077");
         adView.setAdSize(AdSize.SMART_BANNER);
+        //adView.setBackgroundColor(Color.BLACK);
+
         adView.loadAd(new AdRequest.Builder().build());
 	}
 	
 	protected View createLayout() {
         // Create the layout
-		layout = new LinearLayout(this);
-		layout.setOrientation(LinearLayout.VERTICAL);
+		layout = new RelativeLayout(this);
 		layout.setBackgroundColor(Color.BLACK);
 
-		// Add the AdMob view
-		addAdView();
-        
         // Add the libgdx view
         layout.addView(gameView);
 
+		// Add the AdMob view
+		addAdView(true);
+        
         return layout;
 	}
 
-	protected void addAdView() {
+	protected void addAdView(boolean hidden) {
 		createAdView(); // must be recreated each time
+		
         RelativeLayout.LayoutParams adParams = 
             new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
-        adParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        adParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        layout.addView(adView, 0, adParams);
+        adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        adParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+        layout.addView(adView, adParams);
+
+        if (hidden) adView.setVisibility(View.GONE);
 	}
 	
 	protected void readdAdView() {
-		layout.removeViewAt(0);
-		addAdView();
+		boolean wasHidden = (adView == null || adView.getVisibility() == View.GONE);
+		layout.removeView(adView);
+		addAdView(wasHidden);
 	}
 	
 	@Override
@@ -88,5 +94,14 @@ public class AndroidLauncher extends AndroidApplication {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(content, createLayoutParams());
+	}
+
+	@Override
+	public void setBannerAdVisible(final boolean visible) {
+		this.runOnUiThread(new Runnable() {
+			public void run() {
+				adView.setVisibility(visible ? View.VISIBLE : View.GONE);
+			}
+		});
 	}
 }

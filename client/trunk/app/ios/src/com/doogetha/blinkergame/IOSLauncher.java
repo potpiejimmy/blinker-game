@@ -17,7 +17,7 @@ import org.robovm.bindings.admob.GADRequest;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 
-public class IOSLauncher extends IOSApplication.Delegate {
+public class IOSLauncher extends IOSApplication.Delegate implements NativeApplication {
 	
 	protected GADBannerView bannerView = null;
 	
@@ -26,7 +26,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
 		config.orientationLandscape = true;
 		config.orientationPortrait = true;
-        return new IOSApplication(new BlinkerGame(), config);
+        return new IOSApplication(new BlinkerGame(this), config);
     }
 
 	@Override
@@ -49,6 +49,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
 		bannerView.setAdUnitID("ca-app-pub-9069641916384503/6810683273");
 	    bannerView.setRootViewController(adsViewController);
 //	    bannerView.setBackgroundColor(new UIColor(0,0,0,1));
+	    bannerView.setHidden(true); // hide until setBannderAdVisible is called
 	    
 	    rootViewController.getView().addSubview(bannerView);
 	}
@@ -63,6 +64,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
                                          new CGSize(DEVICE_SCREEN_SIZE.width(), DEVICE_SCREEN_SIZE.height());
         bannerView.setCenter(new CGPoint(SCREEN_SIZE.width()/2,SCREEN_SIZE.height()-AD_SIZE.height()/2));
 
+		// reload ad on orientation change
 		bannerView.loadRequest(GADRequest.request());
 	}
 
@@ -81,4 +83,9 @@ public class IOSLauncher extends IOSApplication.Delegate {
         UIApplication.main(argv, null, IOSLauncher.class);
         pool.close();
     }
+
+	@Override
+	public void setBannerAdVisible(boolean visible) {
+		bannerView.setHidden(!visible);
+	}
 }
