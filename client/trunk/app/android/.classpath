@@ -6,7 +6,7 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="src" path="/blinker-game-core"/>
-	<classpathentry exported="true" kind="lib" path="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.0.1/e72403f6baff51e9a638939dd2c8a5e9a7f7dc18/gdx-backend-android-1.0.1.jar" sourcepath="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.0.1/a53942d34a8773f4a82f3decf23a31ba2d9faf3b/gdx-backend-android-1.0.1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.0.1/ebd13341e1f7bf0139baf26aaef195a00677d7c3/gdx-1.0.1.jar" sourcepath="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.0.1/f98975f65ecc1e68f9d626e6f850457e17d6604a/gdx-1.0.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.1.0/be72ba2987612670c7e9533bdaaa999955752237/gdx-backend-android-1.1.0.jar" sourcepath="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.1.0/fb44c77894319e626d0d61615f1319272e16cc44/gdx-backend-android-1.1.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.1.0/686f5a609c717eb0769d3b954c501a49bf4fe351/gdx-1.1.0.jar" sourcepath="/Users/thorsten/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.1.0/abdb14d6d21978e13055b14f834108e4c8dd8cba/gdx-1.1.0-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
