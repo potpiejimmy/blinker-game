@@ -5,16 +5,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.doogetha.blinkergame.BlinkerGame;
+import com.doogetha.blinkergame.Utils;
 
 public class EnterBetScreen extends AbstractScreen {
 
@@ -29,11 +27,14 @@ public class EnterBetScreen extends AbstractScreen {
 		background = new Image(new TextureRegion(app.assets.textureRoad));
 		background.setSize(BlinkerGame.VIRTUAL_TILE_SIZE, BlinkerGame.VIRTUAL_TILE_SIZE);
 		
-		goButton = new TextButton("Go !", new TextButtonStyle(
-				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
-				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),
-				null,
-				app.assets.font));
+		goButton = Utils.newTextButton(app, "Go !", new Runnable() {
+			@Override
+		    public void run() {
+				int bet = 0;
+				try {bet = Integer.parseInt(betField.getText());} catch (NumberFormatException nfe) {}
+				app.startGame(bet);
+		    }
+		});
 		
 		Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pm.setColor(Color.BLACK);
@@ -52,19 +53,6 @@ public class EnterBetScreen extends AbstractScreen {
 		stage.addActor(betLabel);
 		stage.addActor(betField);
 		stage.addActor(goButton);
-		
-		goButton.addListener(new InputListener() {
-			@Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				int bet = 0;
-				try {bet = Integer.parseInt(betField.getText());} catch (NumberFormatException nfe) {}
-				app.startGame(bet);
-		    }
-		});
 	}
 
 	protected void setFixedPositions() {

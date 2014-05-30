@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -66,15 +65,18 @@ public class Utils {
 		widget.setColor(c.r, c.g, c.b, 0f); // invisible alpha
 	}
 	
-	public static Button newTextButton(BlinkerGame app, String text, final Runnable action) {
+	public static TextButton newTextButton(BlinkerGame app, String text, final Runnable action) {
 		TextButton b = new TextButton(text, new TextButtonStyle(
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonUp)),
 				new TextureRegionDrawable(new TextureRegion(app.assets.textureButtonDown)),null,
 				app.assets.font));
-		b.addListener(new InputListener() {
-			@Override public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) { return true; }
-			@Override public void touchUp (InputEvent event, float x, float y, int pointer, int button) { action.run(); }
-		});
+		b.getStyle().fontColor = Color.BLACK;
+		if (action != null) {
+			b.addListener(new InputListener() {
+				@Override public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) { return true; }
+				@Override public void touchUp (InputEvent event, float x, float y, int pointer, int button) { action.run(); }
+			});
+		}
 		return b;
 	}
 }

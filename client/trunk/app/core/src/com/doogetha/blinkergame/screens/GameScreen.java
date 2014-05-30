@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.Utils;
 
@@ -34,6 +35,8 @@ public class GameScreen extends AbstractScreen {
 	private int nextTurn = -1;
 	
 	private int score = 0;
+	
+	protected TextButton restartButton;
 	
 	private List<Integer> directionHistory = new ArrayList<Integer>();
 	int historyIndex = 0;
@@ -77,20 +80,17 @@ public class GameScreen extends AbstractScreen {
 		
 		app.assets.buttonLeft.addListener(new DirectionButtonListener(app.assets.buttonLeft, app.assets.buttonRight));
 		app.assets.buttonRight.addListener(new DirectionButtonListener(app.assets.buttonRight, app.assets.buttonLeft));
-		app.assets.restartButton.addListener(new InputListener() {
+		restartButton = Utils.newTextButton(app, "Restart", new Runnable() {
 			@Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (!app.assets.restartButton.isDisabled()) {
+		    public void run() {
+				if (!restartButton.isDisabled()) {
 					Utils.fadeVisibility(app.assets.road, 0f, 0.5f, false);
 					Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, false);
-					app.assets.restartButton.setDisabled(true);
+					restartButton.setDisabled(true);
 				}
 		    }
 		});
+		restartButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 		
 		setFixedScreenPositions();
 		
@@ -104,7 +104,7 @@ public class GameScreen extends AbstractScreen {
 		stage.addActor(app.assets.getready);
 		stage.addActor(app.assets.drive);
 		stage.addActor(app.assets.gameover);
-		stage.addActor(app.assets.restartButton);
+		stage.addActor(restartButton);
 	}
 	
 	protected void setFixedScreenPositions() {
@@ -117,7 +117,7 @@ public class GameScreen extends AbstractScreen {
 		centerOnScreen(app.assets.getready);
 		centerOnScreen(app.assets.drive);
 		centerOnScreen(app.assets.gameover);
-		centerOnScreen(app.assets.restartButton);
+		centerOnScreen(restartButton);
 		centerOnScreen(app.assets.plusLabel);
 	}
 	
@@ -292,8 +292,8 @@ public class GameScreen extends AbstractScreen {
 		stopCarTime = System.currentTimeMillis();
 		setDirectionButtonsVisible(false);
 		app.assets.gameover.addAction(Utils.newFadeAction(1f, 1f));
-		app.assets.restartButton.setDisabled(false);
-		app.assets.restartButton.addAction(Utils.newDelayAction(2f,
+		restartButton.setDisabled(false);
+		restartButton.addAction(Utils.newDelayAction(2f,
 			new SequenceAction(Utils.newVisibleAction(true), 
 				Utils.newRunnableAction(new Runnable() {
 					@Override
@@ -404,7 +404,7 @@ public class GameScreen extends AbstractScreen {
 		setDirectionButtonsVisible(false);
 		gameOver = false;
 		Utils.makeAlphaInvisible(app.assets.gameover);
-		app.assets.restartButton.setVisible(false);
+		restartButton.setVisible(false);
 		updateScore(0);
 		app.assets.betLabel.setText(app.getBet()>0 ? "+"+app.getBet() : "");
 		Utils.fadeVisibility(app.assets.betLabel, 0f, 0f, true);

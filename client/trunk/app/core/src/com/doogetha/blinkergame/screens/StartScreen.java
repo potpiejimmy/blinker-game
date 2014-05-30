@@ -24,9 +24,9 @@ public class StartScreen extends AbstractScreen {
 			@Override public void run() { Gdx.app.exit(); }
 		});
 
-		startButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
-		startWithBetButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
-		exitButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
+		startButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
+		startWithBetButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
+		exitButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
 
 		setFixedPositions();
 		
@@ -38,9 +38,9 @@ public class StartScreen extends AbstractScreen {
 	}
 	
 	protected void setFixedPositions() {
-		startButton.setPosition((stage.getViewport().getWorldWidth() - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE*9/5);
-		startWithBetButton.setPosition((stage.getViewport().getWorldWidth() - startWithBetButton.getWidth())/2, BlinkerGame.BUTTON_SIZE);
-		exitButton.setPosition((stage.getViewport().getWorldWidth() - exitButton.getWidth())/2, BlinkerGame.BUTTON_SIZE/5);
+		startButton.setPosition((stage.getViewport().getWorldWidth() - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 7 / 5);
+		startWithBetButton.setPosition((stage.getViewport().getWorldWidth() - startWithBetButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 4 / 5);
+		exitButton.setPosition((stage.getViewport().getWorldWidth() - exitButton.getWidth())/2, BlinkerGame.BUTTON_SIZE / 5);
 		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - stage.getViewport().getWorldWidth())/2, -(app.assets.startScreenBackground.getHeight() - stage.getViewport().getWorldHeight())/2);
 		app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3);
 	}

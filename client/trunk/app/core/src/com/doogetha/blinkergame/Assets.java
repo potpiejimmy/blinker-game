@@ -13,8 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Assets {
@@ -23,7 +21,7 @@ public class Assets {
 	public Texture buttonLeftOff,buttonLeftOn,buttonRightOff,buttonRightOn;
 	public Texture textureGetReady, textureDrive, textureGameOver, texturePlusOne;
 	public Texture textureButtonUp, textureButtonDown;
-	public Button buttonLeft, buttonRight, restartButton;
+	public Button buttonLeft, buttonRight;
 	public Image road;
 	public AnimatedImage car;
 	public Image startScreenBackground, startScreenCar;
@@ -91,11 +89,6 @@ public class Assets {
 		buttonLeft.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
 		buttonRight = new Button(new TextureRegionDrawable(new TextureRegion(buttonRightOff)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)), new TextureRegionDrawable(new TextureRegion(buttonRightOn)));
 		buttonRight.setSize(BlinkerGame.BUTTON_SIZE, BlinkerGame.BUTTON_SIZE);
-		restartButton = new TextButton("Restart", new TextButtonStyle(
-				new TextureRegionDrawable(new TextureRegion(textureButtonUp)),
-				new TextureRegionDrawable(new TextureRegion(textureButtonDown)),null,
-				font));
-		restartButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
 		
 		scoreLabel = new Label(" ", new Label.LabelStyle(scoreFont, Color.YELLOW));
 		plusLabel = new Label("+1", new Label.LabelStyle(scoreFont, Color.YELLOW));
