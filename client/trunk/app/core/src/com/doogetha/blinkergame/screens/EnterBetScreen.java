@@ -35,6 +35,7 @@ public class EnterBetScreen extends AbstractScreen {
 				app.startGame(bet);
 		    }
 		});
+		goButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
 		
 		Pixmap pm = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pm.setColor(Color.BLACK);
@@ -45,7 +46,7 @@ public class EnterBetScreen extends AbstractScreen {
 		betField.setMaxLength(5);
 		betField.setSize(BlinkerGame.VIEWPORT_SIZE, 90);
 
-		betLabel = new Label("Enter bet:", new Label.LabelStyle(app.assets.font, Color.YELLOW));
+		betLabel = new Label("Enter your bet (min. score):", new Label.LabelStyle(app.assets.font, Color.YELLOW));
 		
 		setFixedPositions();
 		
@@ -60,8 +61,8 @@ public class EnterBetScreen extends AbstractScreen {
 		float buttonPosX = (stage.getViewport().getWorldWidth() - goButton.getWidth())/2;
 		float buttonPosY = stage.getViewport().getWorldHeight()/2 + 50;
 		goButton.setPosition(buttonPosX, stage.getViewport().getWorldHeight()/2);
-		betField.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() - 20);
-		betLabel.setPosition(buttonPosX + 80, buttonPosY + goButton.getHeight() + betField.getHeight() - 20);
+		betField.setPosition(buttonPosX, buttonPosY + goButton.getHeight() - 20);
+		betLabel.setPosition(buttonPosX, buttonPosY + goButton.getHeight() + betField.getHeight() - 20);
 	}
 	
 	@Override

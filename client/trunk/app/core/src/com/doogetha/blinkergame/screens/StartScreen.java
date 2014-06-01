@@ -3,6 +3,8 @@ package com.doogetha.blinkergame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.Utils;
@@ -42,7 +44,7 @@ public class StartScreen extends AbstractScreen {
 		startWithBetButton.setPosition((stage.getViewport().getWorldWidth() - startWithBetButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 4 / 5);
 		exitButton.setPosition((stage.getViewport().getWorldWidth() - exitButton.getWidth())/2, BlinkerGame.BUTTON_SIZE / 5);
 		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - stage.getViewport().getWorldWidth())/2, -(app.assets.startScreenBackground.getHeight() - stage.getViewport().getWorldHeight())/2);
-		app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3);
+		if (app.assets.startScreenCar.getActions().size == 0) app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3);
 	}
 	
 	@Override
@@ -60,10 +62,26 @@ public class StartScreen extends AbstractScreen {
 		setFixedPositions();
 	}
 	
+	protected void startupAnimation() {
+		final float ANIM_DURATION = 1.5f;
+		
+		Utils.makeAlphaInvisible(startButton);
+		Utils.makeAlphaInvisible(startWithBetButton);
+		Utils.makeAlphaInvisible(exitButton);
+		app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, -app.assets.startScreenCar.getHeight());
+		
+		startButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.fadeIn(0.2f)));
+		startWithBetButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.fadeIn(0.2f)));
+		exitButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.fadeIn(0.2f)));
+		app.assets.startScreenCar.addAction(Actions.moveTo((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3, ANIM_DURATION, Interpolation.fade));
+	}
+	
 	@Override
 	public void show() {
 		super.show();
-
+		
+		startupAnimation();
+		
 		stage.getRoot().setVisible(false);
 		Utils.makeAlphaInvisible(stage.getRoot());
 		Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, true);

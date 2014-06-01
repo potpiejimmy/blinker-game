@@ -76,7 +76,7 @@ public class Assets {
 		scoreFont = new BitmapFont(Gdx.files.internal("data/scorefont.fnt")); // size 90
 		
 		soundCoin = Gdx.audio.newSound(Gdx.files.internal("data/coin.wav"));
-		soundTurnSignal = Gdx.audio.newSound(Gdx.files.internal("data/turnsignal.ogg"));
+		soundTurnSignal = Gdx.audio.newSound(Gdx.files.internal("data/turnsignal.wav"));
 		
 		buttonLeftOff = new Texture(Gdx.files.internal("data/buttonleft_off.png"));
 		buttonLeftOn = new Texture(Gdx.files.internal("data/buttonleft_on.png"));

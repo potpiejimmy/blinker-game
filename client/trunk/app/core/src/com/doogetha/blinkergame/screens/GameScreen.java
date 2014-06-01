@@ -90,7 +90,7 @@ public class GameScreen extends AbstractScreen {
 				}
 		    }
 		});
-		restartButton.setSize(BlinkerGame.VIEWPORT_SIZE, BlinkerGame.VIEWPORT_SIZE / 4);
+		restartButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
 		
 		setFixedScreenPositions();
 		
