@@ -11,7 +11,8 @@ import com.doogetha.blinkergame.Utils;
 
 public class StartScreen extends AbstractScreen {
 
-	private Button startButton, startWithBetButton, exitButton;
+	private Button startButton, startWithBetButton;
+	private boolean showStartupAnimation = true;
 	
 	public StartScreen(BlinkerGame game) {
 		super(game);
@@ -22,29 +23,28 @@ public class StartScreen extends AbstractScreen {
 		startWithBetButton = Utils.newTextButton(app, "Start Game (+Bet)", new Runnable() {
 			@Override public void run() { app.setScreen(app.enterBetScreen); }
 		});
-		exitButton = Utils.newTextButton(app, "Exit", new Runnable() {
-			@Override public void run() { Gdx.app.exit(); }
-		});
 
 		startButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
 		startWithBetButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
-		exitButton.setSize(BlinkerGame.VIEWPORT_SIZE * 2 / 3, BlinkerGame.VIEWPORT_SIZE / 6);
 
-		setFixedPositions();
-		
 		stage.addActor(app.assets.startScreenBackground);
 		stage.addActor(app.assets.startScreenCar);
 		stage.addActor(startButton);
 		stage.addActor(startWithBetButton);
-		stage.addActor(exitButton);
 	}
 	
 	protected void setFixedPositions() {
-		startButton.setPosition((stage.getViewport().getWorldWidth() - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 7 / 5);
-		startWithBetButton.setPosition((stage.getViewport().getWorldWidth() - startWithBetButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 4 / 5);
-		exitButton.setPosition((stage.getViewport().getWorldWidth() - exitButton.getWidth())/2, BlinkerGame.BUTTON_SIZE / 5);
+		startButton.setPosition((stage.getViewport().getWorldWidth() - startButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 5 / 5);
+		startWithBetButton.setPosition((stage.getViewport().getWorldWidth() - startWithBetButton.getWidth())/2, BlinkerGame.BUTTON_SIZE * 2 / 5);
 		app.assets.startScreenBackground.setPosition(-(app.assets.startScreenBackground.getWidth() - stage.getViewport().getWorldWidth())/2, -(app.assets.startScreenBackground.getHeight() - stage.getViewport().getWorldHeight())/2);
-		if (app.assets.startScreenCar.getActions().size == 0) app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3);
+		if (app.assets.startScreenCar.getActions().size == 0) {
+			if (showStartupAnimation) {
+				showStartupAnimation = false;
+				startupAnimation();
+			} else {
+				app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3);
+			}
+		}
 	}
 	
 	@Override
@@ -64,27 +64,27 @@ public class StartScreen extends AbstractScreen {
 	
 	protected void startupAnimation() {
 		final float ANIM_DURATION = 1.5f;
-		
+
+		startButton.setVisible(false);
+		startWithBetButton.setVisible(false);
 		Utils.makeAlphaInvisible(startButton);
 		Utils.makeAlphaInvisible(startWithBetButton);
-		Utils.makeAlphaInvisible(exitButton);
 		app.assets.startScreenCar.setPosition((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, -app.assets.startScreenCar.getHeight());
-		
-		startButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.fadeIn(0.2f)));
-		startWithBetButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.fadeIn(0.2f)));
-		exitButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.fadeIn(0.2f)));
+
+		startButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.sequence(Actions.show(), Actions.fadeIn(0.2f))));
+		startWithBetButton.addAction(Actions.delay(ANIM_DURATION-0.5f, Actions.sequence(Actions.show(), Actions.fadeIn(0.2f))));
 		app.assets.startScreenCar.addAction(Actions.moveTo((stage.getViewport().getWorldWidth()-app.assets.startScreenCar.getWidth())/2, (stage.getViewport().getWorldHeight()-app.assets.startScreenCar.getHeight())/4*3, ANIM_DURATION, Interpolation.fade));
 	}
 	
 	@Override
 	public void show() {
 		super.show();
-		
-		startupAnimation();
-		
+
 		stage.getRoot().setVisible(false);
 		Utils.makeAlphaInvisible(stage.getRoot());
 		Utils.fadeVisibility(stage.getRoot(), 0f, 0.5f, true);
+
+		this.showStartupAnimation = true;
 	}
 	
 	@Override
