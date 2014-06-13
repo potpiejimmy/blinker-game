@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.doogetha.blinkergame.BlinkerGame;
 import com.doogetha.blinkergame.NativeApplication;
@@ -16,7 +15,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
-public class AndroidLauncher extends AndroidApplication implements NativeApplication {
+public class AndroidLauncher extends GoogleGameActivity implements NativeApplication {
 
 	private RelativeLayout layout = null;
 	private View gameView;
