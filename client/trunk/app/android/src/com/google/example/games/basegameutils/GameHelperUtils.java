@@ -7,6 +7,7 @@ import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.doogetha.blinkergame.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
 
