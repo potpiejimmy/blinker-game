@@ -63,6 +63,7 @@ project(":ios") {
     dependencies {
         compile project(":core")
         compile files('./libs/robovm-admob.jar')
+        compile files('./libs/robovm-gpgs.jar')
         compile "org.robovm:robovm-rt:${roboVMVersion}"
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"

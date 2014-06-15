@@ -1,9 +1,13 @@
 package com.doogetha.blinkergame;
 
+import java.util.ArrayList;
+
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSDictionary;
+import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIDevice;
@@ -13,11 +17,16 @@ import org.robovm.apple.uikit.UIViewController;
 import org.robovm.bindings.admob.GADAdSizeManager;
 import org.robovm.bindings.admob.GADBannerView;
 import org.robovm.bindings.admob.GADRequest;
+import org.robovm.bindings.gpp.GPPSignIn;
+import org.robovm.bindings.gpp.GPPSignInDelegate;
+import org.robovm.bindings.gt.GTMOAuth2Authentication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 
-public class IOSLauncher extends IOSApplication.Delegate implements NativeApplication {
+public class IOSLauncher extends IOSApplication.Delegate implements NativeApplication, GPPSignInDelegate {
+	
+	public final static String GPGS_CLIENT_ID = "312023873945-4ijovu4c1899i8i821ho0fhirklj7cva.apps.googleusercontent.com";
 	
 	protected GADBannerView bannerView = null;
 	
@@ -33,10 +42,31 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
 		boolean result = super.didFinishLaunching(application, launchOptions);
 		
+		setupGoogleSignIn();
+		
 		UIDevice.getCurrentDevice().beginGeneratingDeviceOrientationNotifications();
 		setupAdvertisements(application);
 		updateBannerPosition(UIApplication.getSharedApplication().getStatusBarOrientation());
 		return result;
+	}
+	
+	protected void setupGoogleSignIn() {
+		// set google plus settings
+		GPPSignIn signIn = GPPSignIn.sharedInstance();
+		signIn.setClientID(GPGS_CLIENT_ID);
+
+		ArrayList<NSString> scopes = new ArrayList<NSString>();
+		scopes.add(new NSString("https://www.googleapis.com/auth/games"));
+		scopes.add(new NSString("https://www.googleapis.com/auth/appstate"));
+		signIn.setScopes(new NSArray<NSString>(scopes));
+
+		signIn.setDelegate(this);
+		signIn.setShouldFetchGoogleUserID(true);
+		signIn.setShouldFetchGoogleUserEmail(false);
+		signIn.setShouldFetchGooglePlusUser(false);
+
+		// try to sign in silently
+		//signIn.trySilentAuthentication();
 	}
 	
 	protected void setupAdvertisements(UIApplication application) {
@@ -91,11 +121,18 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	
 	@Override
 	public void invokeLeaderboards() {
-		// TODO
+		// TODO XXX TESTING
+		GPPSignIn.sharedInstance().authenticate();
 	}
 
 	@Override
 	public void submitScore(int score) {
 		// TODO
+	}
+
+	@Override
+	public void finishedWithAuth(GTMOAuth2Authentication arg0, NSError arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 }

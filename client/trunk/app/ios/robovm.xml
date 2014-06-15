@@ -16,6 +16,10 @@
     <resource>
       <directory>data</directory>
     </resource>
+    <resource>
+      <directory>libs/ios/resources</directory>
+      <skipPngCrush>true</skipPngCrush>
+    </resource>
   </resources>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
@@ -33,12 +37,27 @@
     <lib>build/libs/ios/libgdx.a</lib>
     <lib>build/libs/ios/libObjectAL.a</lib>
     <lib>libs/ios/libadmob.a</lib>
+    <lib>c++</lib>
   </libs>
+  <frameworkPaths>
+    <path>libs/ios/frameworks</path>
+  </frameworkPaths>
   <frameworks>
+    <framework>GoogleOpenSource</framework>
+    <framework>GooglePlayGames</framework>
+    <framework>GooglePlus</framework>
+    <framework>AddressBook</framework>
+    <framework>AssetsLibrary</framework>
+    <framework>CoreData</framework>
+    <framework>CoreGraphics</framework>
+    <framework>CoreLocation</framework>
+    <framework>CoreMotion</framework>
+    <framework>CoreText</framework>
+    <framework>MediaPlayer</framework>
+    <framework>Security</framework>
     <framework>UIKit</framework>
     <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>
-    <framework>CoreGraphics</framework>
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>

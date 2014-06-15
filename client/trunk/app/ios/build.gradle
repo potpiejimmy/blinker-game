@@ -42,6 +42,7 @@ task updateRoboVMXML << {
           libs.appendNode('lib', 'build/libs/ios/' + file.getName())
       }
       libs.appendNode('lib','libs/ios/libadmob.a')
+      libs.appendNode('lib','c++')
   }
   
   def writer = new FileWriter(xml)
