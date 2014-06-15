@@ -5,18 +5,23 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.GameHelper;
 
 public class GoogleGameActivity extends AndroidApplication implements GameHelper.GameHelperListener {
 
-	// The game helper object. This class is mainly a wrapper around this object.
+	public final static String LEADERBOARD_ID_HIGHSCORES = "CgkImfPJsIoJEAIQAQ";
+	
 	protected GameHelper mHelper;
 
 	protected boolean mDebugLog = false;
+	
+	private boolean invokingLeaderboards = false;
 
 	public GameHelper getGameHelper() {
 		if (mHelper == null) {
 			mHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+			mHelper.setMaxAutoSignInAttempts(0); // log on only if high score button pressed
 			mHelper.enableDebugLog(mDebugLog);
 		}
 		return mHelper;
@@ -95,16 +100,39 @@ public class GoogleGameActivity extends AndroidApplication implements GameHelper
 	protected GameHelper.SignInFailureReason getSignInError() {
 		return mHelper.getSignInError();
 	}
-
+	
+	public void invokeLeaderboards() {
+		if (!getGameHelper().isSignedIn()) {
+			invokingLeaderboards = true;
+			getGameHelper().beginUserInitiatedSignIn();
+		} else {
+			displayHighscoreLeaderboard();
+		}
+	}
+	
+	public void submitScore(int score) {
+		if (getGameHelper().isSignedIn()) {
+			// only submit if signed in
+			Games.Leaderboards.submitScore(getApiClient(), LEADERBOARD_ID_HIGHSCORES, score);
+		}
+	}
+	
+	protected void displayHighscoreLeaderboard() {
+		startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient(), LEADERBOARD_ID_HIGHSCORES), 1);
+	}
+	
+	// -------------------------------------------
+	
 	@Override
 	public void onSignInFailed() {
-		// TODO Auto-generated method stub
-		
+		invokingLeaderboards = false;
 	}
 
 	@Override
 	public void onSignInSucceeded() {
-		// TODO Auto-generated method stub
-		
+		if (invokingLeaderboards) {
+			displayHighscoreLeaderboard();
+		}
+		invokingLeaderboards = false;
 	}
 }

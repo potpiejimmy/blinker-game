@@ -103,4 +103,14 @@ public class AndroidLauncher extends GoogleGameActivity implements NativeApplica
 			}
 		});
 	}
+	
+	@Override
+	public void invokeLeaderboards() {
+		super.invokeLeaderboards();
+	}
+	
+	@Override
+	public void submitScore(int score) {
+		super.submitScore(score);
+	}
 }

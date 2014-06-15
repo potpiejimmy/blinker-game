@@ -88,4 +88,14 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	public void setBannerAdVisible(boolean visible) {
 		bannerView.setHidden(!visible);
 	}
+	
+	@Override
+	public void invokeLeaderboards() {
+		// TODO
+	}
+
+	@Override
+	public void submitScore(int score) {
+		// TODO
+	}
 }

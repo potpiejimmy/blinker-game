@@ -305,6 +305,8 @@ public class GameScreen extends AbstractScreen {
 			updateScore(0);
 			fadeBetLabel(false);
 		}
+		
+		if (score > 0) app.submitScore(score);
 	}
 	
 	protected void enterNewState(GameState newState) {

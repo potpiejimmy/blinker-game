@@ -10,4 +10,14 @@ public interface NativeApplication
 	 * @param visible true or false
 	 */
 	public void setBannerAdVisible(boolean visible);
+	
+	/**
+	 * Invoke high score (signing into Google Game Services)
+	 */
+	public void invokeLeaderboards();
+	
+	/**
+	 * Submits the given score
+	 */
+	public void submitScore(int score);
 }

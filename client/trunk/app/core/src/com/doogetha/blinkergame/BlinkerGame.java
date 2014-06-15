@@ -66,4 +66,14 @@ public class BlinkerGame extends Game implements NativeApplication {
 	public void setBannerAdVisible(boolean visible) {
 		if (nativeApplication != null) nativeApplication.setBannerAdVisible(visible);
 	}
+	
+	@Override
+	public void invokeLeaderboards() {
+		if (nativeApplication != null) nativeApplication.invokeLeaderboards();
+	}
+
+	@Override
+	public void submitScore(int score) {
+		if (nativeApplication != null) nativeApplication.submitScore(score);
+	}
 }
