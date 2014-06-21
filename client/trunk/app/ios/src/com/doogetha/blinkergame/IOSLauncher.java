@@ -8,7 +8,9 @@ import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
+import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
@@ -17,8 +19,11 @@ import org.robovm.apple.uikit.UIViewController;
 import org.robovm.bindings.admob.GADAdSizeManager;
 import org.robovm.bindings.admob.GADBannerView;
 import org.robovm.bindings.admob.GADRequest;
+import org.robovm.bindings.gpgs.GPGManager;
+import org.robovm.bindings.gpgs.GPGReAuthenticationBlock;
 import org.robovm.bindings.gpp.GPPSignIn;
 import org.robovm.bindings.gpp.GPPSignInDelegate;
+import org.robovm.bindings.gpp.GPPURLHandler;
 import org.robovm.bindings.gt.GTMOAuth2Authentication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
@@ -27,6 +32,9 @@ import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 public class IOSLauncher extends IOSApplication.Delegate implements NativeApplication, GPPSignInDelegate {
 	
 	public final static String GPGS_CLIENT_ID = "312023873945-4ijovu4c1899i8i821ho0fhirklj7cva.apps.googleusercontent.com";
+	
+	private boolean signedIn = false;
+	private GPGReAuthenticationBlock gamesAuthBlock;
 	
 	protected GADBannerView bannerView = null;
 	
@@ -68,6 +76,11 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		// try to sign in silently
 		//signIn.trySilentAuthentication();
 	}
+	
+	@Override
+	public boolean openURL (UIApplication application, NSURL url, String sourceApplication, NSObject annotation) {
+		return GPPURLHandler.handleURL(url, sourceApplication, annotation);
+	}	
 	
 	protected void setupAdvertisements(UIApplication application) {
 	    UIViewController rootViewController = application.getKeyWindow().getRootViewController();
@@ -122,7 +135,7 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	@Override
 	public void invokeLeaderboards() {
 		// TODO XXX TESTING
-		GPPSignIn.sharedInstance().authenticate();
+		if (!signedIn) GPPSignIn.sharedInstance().authenticate();
 	}
 
 	@Override
@@ -131,8 +144,38 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	}
 
 	@Override
-	public void finishedWithAuth(GTMOAuth2Authentication arg0, NSError arg1) {
-		// TODO Auto-generated method stub
-		
+	public void finishedWithAuth (GTMOAuth2Authentication auth, NSError error) {
+		if (error == null) {
+			System.out.println("logged in succesfully.");
+			
+			// after the google+ sign-in is done, we must continue the sign-in of 'games'.
+			startGoogleGamesSignIn();
+		} else {
+			System.out.println("error during login: " + error.description());
+			signedIn = false;
+		}
 	}
+	
+	private void startGoogleGamesSignIn () {
+		final GPPSignIn s = GPPSignIn.sharedInstance();
+		GPGManager m = GPGManager.sharedInstance();
+		
+		gamesAuthBlock = new GPGReAuthenticationBlock() {
+			@Override
+			public void invoke (boolean requiresKeychainWipe, NSError error) {
+				// If you hit this, auth has failed and you need to authenticate.
+				// Most likely you can refresh behind the scenes
+				if (requiresKeychainWipe) {
+					s.signOut();
+				}
+				s.authenticate();
+				signedIn = false;
+			}
+		};
+		
+		// pass the GPPSignIn to the GPGManager.
+		m.signIn(s, gamesAuthBlock);
+		signedIn = true;
+	}
+
 }

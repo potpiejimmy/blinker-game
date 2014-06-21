@@ -55,5 +55,18 @@
 			</array>
 		</dict>
 	</dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.doogetha.blinkergame</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.doogetha.blinkergame</string>
+			</array>
+			<key>CFBundleURLTypes</key>
+			<string>Editor</string>
+		</dict>
+	</array>
 </dict>
 </plist>
