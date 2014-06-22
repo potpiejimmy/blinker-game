@@ -19,6 +19,8 @@ import org.robovm.apple.uikit.UIViewController;
 import org.robovm.bindings.admob.GADAdSizeManager;
 import org.robovm.bindings.admob.GADBannerView;
 import org.robovm.bindings.admob.GADRequest;
+import org.robovm.bindings.gpgs.GPGLeaderboardController;
+import org.robovm.bindings.gpgs.GPGLeaderboardControllerDelegate;
 import org.robovm.bindings.gpgs.GPGManager;
 import org.robovm.bindings.gpgs.GPGReAuthenticationBlock;
 import org.robovm.bindings.gpp.GPPSignIn;
@@ -29,12 +31,15 @@ import org.robovm.bindings.gt.GTMOAuth2Authentication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 
-public class IOSLauncher extends IOSApplication.Delegate implements NativeApplication, GPPSignInDelegate {
+public class IOSLauncher extends IOSApplication.Delegate implements NativeApplication, GPPSignInDelegate, GPGLeaderboardControllerDelegate {
 	
 	public final static String GPGS_CLIENT_ID = "312023873945-4ijovu4c1899i8i821ho0fhirklj7cva.apps.googleusercontent.com";
+	public final static String LEADERBOARD_ID_HIGHSCORES = "CgkImfPJsIoJEAIQAQ";
 	
 	private boolean signedIn = false;
 	private GPGReAuthenticationBlock gamesAuthBlock;
+
+	private boolean invokingLeaderboards = false;
 	
 	protected GADBannerView bannerView = null;
 	
@@ -132,10 +137,21 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		bannerView.setHidden(!visible);
 	}
 	
+	public boolean isSignedIn() {
+		GPPSignIn signIn = GPPSignIn.sharedInstance();
+		GTMOAuth2Authentication auth = signIn.getAuthentication();
+		return (auth != null);
+	}
+	
 	@Override
 	public void invokeLeaderboards() {
 		// TODO XXX TESTING
-		if (!signedIn) GPPSignIn.sharedInstance().authenticate();
+		if (!signedIn) {
+			invokingLeaderboards = true;
+			GPPSignIn.sharedInstance().authenticate();
+		} else {
+			displayHighscoreLeaderboard();
+		}
 	}
 
 	@Override
@@ -143,6 +159,18 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		// TODO
 	}
 
+	protected void displayHighscoreLeaderboard() {
+		// create the view controller
+		GPGLeaderboardController leadController = new GPGLeaderboardController(LEADERBOARD_ID_HIGHSCORES);
+		leadController.setLeaderboardDelegate(this);
+
+		// you can choose the default time scope to display in the view controller.
+		//leadController.setTimeScope(GPGLeaderboardTimeScope.GPGLeaderboardTimeScopeThisWeek);
+
+		// present the leaderboard view controller
+		UIApplication.getSharedApplication().getKeyWindow().getRootViewController().presentViewController(leadController, true, null);
+	}
+	
 	@Override
 	public void finishedWithAuth (GTMOAuth2Authentication auth, NSError error) {
 		if (error == null) {
@@ -150,10 +178,13 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 			
 			// after the google+ sign-in is done, we must continue the sign-in of 'games'.
 			startGoogleGamesSignIn();
+			
+			if (invokingLeaderboards) displayHighscoreLeaderboard();
 		} else {
 			System.out.println("error during login: " + error.description());
 			signedIn = false;
 		}
+		invokingLeaderboards = false;
 	}
 	
 	private void startGoogleGamesSignIn () {
@@ -178,4 +209,9 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		signedIn = true;
 	}
 
+	@Override
+	public void leaderboardViewControllerDidFinish(GPGLeaderboardController arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
