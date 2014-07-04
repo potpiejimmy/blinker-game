@@ -79,7 +79,7 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		signIn.setShouldFetchGooglePlusUser(false);
 
 		// try to sign in silently
-		//signIn.trySilentAuthentication();
+		signIn.trySilentAuthentication();
 	}
 	
 	@Override
@@ -163,7 +163,6 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		// create the view controller
 		GPGLeaderboardController leadController = new GPGLeaderboardController(LEADERBOARD_ID_HIGHSCORES);
 		leadController.setLeaderboardDelegate(this);
-
 		// you can choose the default time scope to display in the view controller.
 		//leadController.setTimeScope(GPGLeaderboardTimeScope.GPGLeaderboardTimeScopeThisWeek);
 
@@ -210,8 +209,7 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	}
 
 	@Override
-	public void leaderboardViewControllerDidFinish(GPGLeaderboardController arg0) {
-		// TODO Auto-generated method stub
-		
+	public void leaderboardViewControllerDidFinish(GPGLeaderboardController viewController) {
+		viewController.dismissViewController(true, null);
 	}
 }
