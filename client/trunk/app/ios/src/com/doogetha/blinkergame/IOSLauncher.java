@@ -6,12 +6,12 @@ import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSAutoreleasePool;
-import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError;
-import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSPropertyList;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIScreen;
@@ -52,7 +52,7 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
     }
 
 	@Override
-	public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
+	public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
 		boolean result = super.didFinishLaunching(application, launchOptions);
 		
 		setupGoogleSignIn();
@@ -83,9 +83,9 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 	}
 	
 	@Override
-	public boolean openURL (UIApplication application, NSURL url, String sourceApplication, NSObject annotation) {
-		return GPPURLHandler.handleURL(url, sourceApplication, annotation);
-	}	
+	public boolean openURL (UIApplication application, NSURL url, String sourceApplication, NSPropertyList annotation) {
+	    return GPPURLHandler.handleURL(url, sourceApplication, annotation);
+	}
 	
 	protected void setupAdvertisements(UIApplication application) {
 	    UIViewController rootViewController = application.getKeyWindow().getRootViewController();
