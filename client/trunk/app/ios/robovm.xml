@@ -33,8 +33,6 @@
     <pattern>com.android.org.conscrypt.OpenSSLMessageDigestJDK$MD5</pattern>
   </forceLinkClasses>
   <libs>
-    <lib>build/libs/ios/libgdx.a</lib>
-    <lib>build/libs/ios/libObjectAL.a</lib>
     <lib>libs/ios/libadmob.a</lib>
     <lib>c++</lib>
   </libs>
