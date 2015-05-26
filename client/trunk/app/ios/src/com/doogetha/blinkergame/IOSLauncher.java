@@ -106,11 +106,11 @@ public class IOSLauncher extends IOSApplication.Delegate implements NativeApplic
 		boolean landscape = UIInterfaceOrientation.LandscapeLeft.equals(orientation) || UIInterfaceOrientation.LandscapeRight.equals(orientation);
 
 		bannerView.setAdSize(landscape ? GADAdSizeManager.smartBannerLandscape() : GADAdSizeManager.smartBannerPortrait());
-        CGSize AD_SIZE = bannerView.getFrame().size();
-        CGSize DEVICE_SCREEN_SIZE = UIScreen.getMainScreen().getBounds().size();
-        CGSize SCREEN_SIZE = landscape ? new CGSize(DEVICE_SCREEN_SIZE.height(), DEVICE_SCREEN_SIZE.width()) :
-                                         new CGSize(DEVICE_SCREEN_SIZE.width(), DEVICE_SCREEN_SIZE.height());
-        bannerView.setCenter(new CGPoint(SCREEN_SIZE.width()/2,SCREEN_SIZE.height()-AD_SIZE.height()/2));
+        CGSize AD_SIZE = bannerView.getFrame().getSize();
+        CGSize DEVICE_SCREEN_SIZE = UIScreen.getMainScreen().getBounds().getSize();
+        CGSize SCREEN_SIZE = landscape ? new CGSize(DEVICE_SCREEN_SIZE.getHeight(), DEVICE_SCREEN_SIZE.getWidth()) :
+                                         new CGSize(DEVICE_SCREEN_SIZE.getWidth(), DEVICE_SCREEN_SIZE.getHeight());
+        bannerView.setCenter(new CGPoint(SCREEN_SIZE.getWidth()/2,SCREEN_SIZE.getHeight()-AD_SIZE.getHeight()/2));
 
 		// reload ad on orientation change
 		bannerView.loadRequest(GADRequest.request());
